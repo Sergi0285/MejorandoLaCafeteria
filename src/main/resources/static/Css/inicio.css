@@ -1,0 +1,94 @@
+/* Estilos para el formulario de inicio de sesión */
+.bg-dark {
+    background-color: #2c2c2c !important;
+}
+
+.text-white {
+    color: #ffffff !important;
+}
+
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+h2 {
+    color: #f7941e;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.rounded {
+    border-radius: 0.375rem;
+}
+
+.px-3 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.py-2 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.p-5 {
+    padding: 3rem !important;
+}
+
+.d-grid {
+    display: grid;
+}
+
+/* Botón de ingresar */
+.btn-primary {
+    background-color: #f7941e;
+    border-color: #f7941e;
+}
+
+.btn-primary:hover {
+    background-color: #e6832c;
+    border-color: #e6832c;
+}
+
+/* Enlaces de olvidaste la contraseña y crear cuenta */
+.text-center a {
+    text-decoration: none;
+}
+
+.text-center a:hover {
+    color: #f7941e;
+}
+
+/* Estilo solo para las cajas de texto dentro del formulario de inicio de sesión */
+.bg-dark .bg-secondary {
+    background-color: #2c2c2c !important;
+    border: 2px solid #f7941e; /* Borde naranja solo en las cajas de texto de inicio de sesión */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.bg-dark .bg-secondary:focus-within {
+    border-color: #f7941e; /* Resaltar borde cuando esté en foco */
+}

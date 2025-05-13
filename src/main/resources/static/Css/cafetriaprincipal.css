@@ -1,0 +1,289 @@
+/* Estilo general para el body */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+.container {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Pestañas */
+.nav-tabs .nav-link.active {
+    background-color: #f7941e;
+    color: white;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    font-weight: bold;
+}
+
+.nav-tabs .nav-link {
+    color: #666;
+    border: none;
+    margin-right: 15px;
+    padding: 10px 20px;
+    transition: color 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #212529;
+}
+
+/* Título de los productos */
+h2 {
+    margin-bottom: 30px;
+    color: #f7941e;
+    text-align: center;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+/* Estilo unificado de producto */
+.product-card {
+    background-color: #333333;
+    color: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease-in-out;
+    margin-right: 15px;
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Información de producto */
+.product-info {
+    flex: 1;
+    text-align: left;
+}
+
+.product-info h5 {
+    margin: 0 0 10px 0;
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+.product-info p {
+    margin: 0;
+    color: #dddddd;
+    font-size: 1rem;
+}
+
+.text-muted {
+    color: #cccccc !important;
+}
+
+/* Like/Dislike general (para productos, no combos) */
+.like-dislike-container {
+    display: flex;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 20px;
+}
+
+.like-dislike-container span {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.like-dislike-container span:hover {
+    color: #f7941e;
+}
+
+/* Cards para los combos */
+.combo-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.combo-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.combo-item {
+    margin-bottom: 20px;
+}
+
+/* Centramos las opciones y su contenido */
+.combo-item .d-flex {
+    justify-content: center;
+    gap: 80px;
+}
+
+/* Estilo de las opciones individuales */
+.combo-item .option {
+    text-align: center;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 25px;
+}
+
+/* Estilo del texto bajo cada imagen */
+.combo-item .option p {
+    margin-top: 10px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+/* ✅ Like/Dislike centrado debajo de cada imagen de opción */
+.combo-item .option .like-dislike-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 8px;
+    gap: 4px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.combo-item .option .like-dislike-container span {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.combo-item .option .like-dislike-container span:hover {
+    color: #f7941e;
+}
+
+/* Precio */
+.combo-card p strong {
+    font-size: 1.5rem;
+    color: #f7941e;
+    text-align: center;
+}
+
+/* Pestañas de los días de desayuno y almuerzo */
+.nav-tabs .nav-item {
+    margin-right: 10px;
+}
+
+.tab-content {
+    margin-top: 30px;
+}
+
+/* Pantalla de contenido activo */
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.show {
+    display: block;
+}
+
+/* Pantalla para las tarjetas de producto */
+.tab-content.text-center {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Asegura que el carrusel muestra los slides correctamente */
+.carousel-inner {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Corrige la visualización de las filas dentro del carrusel */
+.carousel-item {
+    transition: transform 0.6s ease-in-out;
+    /* Eliminado display: flex y justify-content */
+}
+
+/* Asegura que las imágenes dentro de .product-card se vean bien */
+.product-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+
+/* Contenedor del carrusel */
+#productosCarrusel {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 15px;
+    position: relative;
+}
+
+/* Flechas del carrusel fuera del contenedor */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
+    z-index: 1;
+}
+
+.carousel-control-prev {
+    left: -60px;
+}
+
+.carousel-control-next {
+    right: -60px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1);
+}
+
+/* ✅ Imagenes de combos */
+.combo-item img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ✅ Like/Dislike del combo completo */
+.combo-item > .like-dislike-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 1rem;
+    color: #666;
+    margin-top: 10px;
+}
+
+.combo-item > .like-dislike-container span {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.combo-item > .like-dislike-container span:hover {
+    color: #f7941e;
+}
