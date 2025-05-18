@@ -118,7 +118,7 @@ h6,
 }
 
 .hero-header {
-    background: url(../img/fondo.jpg) top right no-repeat;
+    background: url(/Recursos/img/fondo.jpg) top right no-repeat;
     background-size: cover;
 }
 
