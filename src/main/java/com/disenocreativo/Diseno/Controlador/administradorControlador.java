@@ -40,7 +40,7 @@ public class administradorControlador {
 
     // Eliminar un administrador por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarId(@PathVariable int id) {
+    public ResponseEntity<Void> eliminarId(@PathVariable Long id) {
         try {
             administradorDTO adminExistente = servicio.buscarAdministradorPorId(id);
             if (adminExistente != null) {
@@ -72,7 +72,7 @@ public class administradorControlador {
     // La imagen dice ResponseEntity<Administrador>, pero el servicio devuelve DTO.
     // Se usará DTO para la respuesta.
     @GetMapping("/{id}")
-    public ResponseEntity<administradorDTO> buscarId(@PathVariable int id) {
+    public ResponseEntity<administradorDTO> buscarId(@PathVariable Long id) {
         administradorDTO adminDTO = servicio.buscarAdministradorPorId(id);
         if (adminDTO != null) {
             return new ResponseEntity<>(adminDTO, HttpStatus.OK);
@@ -98,12 +98,12 @@ public class administradorControlador {
     }
 
 
-    // Buscar administrador por celular (devuelve DTO)
+    // Buscar administrador por telefono (devuelve DTO)
     // La imagen dice ResponseEntity<Administrador>, pero el servicio devuelve DTO.
     // Se usará DTO para la respuesta.
-    @GetMapping("/buscarPorCelular")
-    public ResponseEntity<administradorDTO> buscarCelular(@RequestParam String celular) {
-        administradorDTO adminDTO = servicio.buscarAdministradorPorCelular(celular);
+    @GetMapping("/buscarPorTelefono")
+    public ResponseEntity<administradorDTO> buscarTelefono(@RequestParam String telefono) {
+        administradorDTO adminDTO = servicio.buscarAdministradorPorTelefono(telefono);
         if (adminDTO != null) {
             return new ResponseEntity<>(adminDTO, HttpStatus.OK);
         } else {
@@ -111,7 +111,7 @@ public class administradorControlador {
         }
     }
 
-    // Endpoint para login (ejemplo)
+    /* Endpoint para login (ejemplo)
     @PostMapping("/login")
     public ResponseEntity<administradorDTO> login(@RequestBody LoginRequest loginRequest) {
         Optional<administradorDTO> adminDTOOpt = servicio.validarCredenciales(loginRequest.getCorreo(), loginRequest.getContrasena());
@@ -119,6 +119,7 @@ public class administradorControlador {
                 .map(adminDTO -> new ResponseEntity<>(adminDTO, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
     }
+    */
 
     // Clase auxiliar para el request de login
     public static class LoginRequest {

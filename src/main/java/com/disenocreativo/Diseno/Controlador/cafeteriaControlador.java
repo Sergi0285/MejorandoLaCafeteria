@@ -83,7 +83,7 @@ public class cafeteriaControlador {
 
     // Buscar cafeterías por ID del administrador
     @GetMapping("/porAdministrador/{idAdministrador}")
-    public ResponseEntity<List<cafeteria>> buscarCafeteriasPorAdministrador(@PathVariable int idAdministrador) {
+    public ResponseEntity<List<cafeteria>> buscarCafeteriasPorAdministrador(@PathVariable Long idAdministrador) {
         try {
             List<cafeteria> cafeterias = servicio.buscarCafeteriasPorAdministrador(idAdministrador);
             if (cafeterias.isEmpty()) {

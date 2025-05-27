@@ -25,7 +25,7 @@ public class cafeteria {
     private String ubicacion;         
 
     @ManyToOne
-    @JoinColumn(name = "administrador_id", nullable = false)
+    @JoinColumn(name = "id", nullable = false)
     private administrador administrador;
 
     @Lob

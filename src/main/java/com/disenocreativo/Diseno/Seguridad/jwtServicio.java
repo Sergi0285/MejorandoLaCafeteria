@@ -19,15 +19,15 @@ import io.jsonwebtoken.security.Keys;
 public class jwtServicio {
     private static final String SECRET_KEY="586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
 
-    public String getToken(UserDetails usuario) {
-        return getToken(new HashMap<>(), usuario);
+    public String getToken(UserDetails administrador) {
+        return getToken(new HashMap<>(), administrador);
     }
 
-    private String getToken(Map<String,Object> extraClaims, UserDetails usuario) {
+    private String getToken(Map<String,Object> extraClaims, UserDetails administrador) {
         return Jwts
             .builder()
             .setClaims(extraClaims)
-            .setSubject(usuario.getUsername())
+            .setSubject(administrador.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + 10000 * 60 * 24))
             .signWith(getKey(), SignatureAlgorithm.HS256)

@@ -1,56 +1,74 @@
 package com.disenocreativo.Diseno.Entidad;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany; 
-import jakarta.persistence.CascadeType; 
-import java.util.List;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class administrador {
+@Table(name="administrador", uniqueConstraints = {@UniqueConstraint(columnNames = {"correo"})})
+public class administrador implements UserDetails{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idAdministrador;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "id_administrador")
+    Long id;
 
-    private String nombre;
-    private String celular;
-    private String correo;
-    private String contrasena;
+    @Column(nullable = false)
+    String nombre;
 
-    // Relación uno-a-muchos con Cafeteria.
-    // Un administrador puede gestionar varias cafeterías.
-    // "mappedBy = "administrador"" indica que el campo 'administrador' en la entidad Cafeteria
-    // es el dueño de esta relación.
-    // CascadeType.ALL significa que las operaciones (persistir, eliminar, etc.) en Administrador
-    // se propagarán a las Cafeterias asociadas.
-    // orphanRemoval = true asegura que si una Cafeteria es removida de la lista 'cafeteriasGestionadas',
-    // será eliminada de la base de datos.
+    @Basic
+    String correo;
+
+    String telefono;
+
+    String password;
+
+    @Enumerated(EnumType.STRING) 
+    role rol;
+
     @OneToMany(mappedBy = "administrador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<cafeteria> cafeteriasGestionadas;
 
-    // Constructor por defecto (requerido por JPA)
-    public administrador() {
-    }
-
     // Constructor con campos principales (puedes ajustarlo según tus necesidades)
     // Usualmente, el ID es generado automáticamente y las listas de relaciones se manejan por separado.
-    public administrador(String nombre, String celular, String correo, String constrasena) {
+    public administrador(String nombre, String telefono, String correo, String password) {
         this.nombre = nombre;
-        this.celular = celular;
+        this.telefono = telefono;
         this.correo = correo;
-        this.contrasena = constrasena;
+        this.password = password;
     }
 
     // Getters y Setters
-    public int getIdAdministrador() {
-        return idAdministrador;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdAdministrador(int idAdministrador) {
-        this.idAdministrador = idAdministrador;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -61,12 +79,12 @@ public class administrador {
         this.nombre = nombre;
     }
 
-    public String getCelular() {
-        return celular;
+    public String getTelefono() {
+        return telefono;
     }
 
-    public void setCelular(String celular) {
-        this.celular = celular;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public String getCorreo() {
@@ -77,14 +95,6 @@ public class administrador {
         this.correo = correo;
     }
 
-    public String getConstrasena() {
-        return contrasena;
-    }
-
-    public void setConstrasena(String constrasena) {
-        this.contrasena = constrasena;
-    }
-
     public List<cafeteria> getCafeteriasGestionadas() {
         return cafeteriasGestionadas;
     }
@@ -92,4 +102,38 @@ public class administrador {
     public void setCafeteriasGestionadas(List<cafeteria> cafeteriasGestionadas) {
         this.cafeteriasGestionadas = cafeteriasGestionadas;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (rol == null) {
+            System.err.println("ERROR: El rol es null para el administrador con correo: " + this.correo);
+            // Considera lanzar una excepción o devolver una lista de autoridades vacía/por defecto si esto es un estado inesperado
+            // return Collections.emptyList(); // o lanzar una excepción más informativa
+            throw new IllegalStateException("El rol del administrador " + this.correo + " no puede ser null.");
+        }
+        System.out.println("Asignando autoridad: " + rol.name() + " para el administrador: " + this.correo);
+        return List.of(new SimpleGrantedAuthority(rol.name()));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+       return true;
+    }
+    @Override
+    public boolean isAccountNonLocked() {
+       return true;
+    }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+     @Override
+    public String getUsername() {
+        return correo;
+    }
+
 }

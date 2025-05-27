@@ -50,7 +50,7 @@ public class cafeteriaServicio {
     }
 
     @Transactional(readOnly = true)
-    public List<cafeteria> buscarCafeteriasPorAdministrador(int idAdministrador) {
+    public List<cafeteria> buscarCafeteriasPorAdministrador(Long idAdministrador) {
         return repositorio.findByAdministradorId(idAdministrador);
     }
 

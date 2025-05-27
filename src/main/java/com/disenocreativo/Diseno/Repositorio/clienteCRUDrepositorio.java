@@ -1,9 +1,9 @@
 package com.disenocreativo.Diseno.Repositorio;
 
 import org.springframework.data.repository.CrudRepository;
-import com.disenocreativo.Diseno.Entidad.usuario;
+import com.disenocreativo.Diseno.Entidad.administrador;
 
-public interface clienteCRUDrepositorio extends CrudRepository <usuario,Long>{
+public interface clienteCRUDrepositorio extends CrudRepository <administrador,Long>{
 
-    usuario findByCorreo(String correo);
+    administrador findByCorreo(String correo);
 }

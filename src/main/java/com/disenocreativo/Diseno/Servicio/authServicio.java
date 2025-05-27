@@ -9,8 +9,8 @@ import com.disenocreativo.Diseno.DTO.authRespuesta;
 import com.disenocreativo.Diseno.DTO.inicioPeticion;
 import com.disenocreativo.Diseno.DTO.registroPeticion;
 import com.disenocreativo.Diseno.Entidad.role;
-import com.disenocreativo.Diseno.Entidad.usuario;
-import com.disenocreativo.Diseno.Repositorio.usuarioRepositorio;
+import com.disenocreativo.Diseno.Entidad.administrador;
+import com.disenocreativo.Diseno.Repositorio.administradorRepositorio;
 import com.disenocreativo.Diseno.Seguridad.jwtServicio;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class authServicio {
-    private final usuarioRepositorio userRepository;
+    private final administradorRepositorio userRepository;
     private final jwtServicio jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -37,28 +37,28 @@ public class authServicio {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getCorreo(), request.getPassword())
         );
-        UserDetails usuario = userRepository.findByCorreo(request.getCorreo()).orElseThrow();
-        String token = jwtService.getToken(usuario);
+        UserDetails administrador = userRepository.findByCorreo(request.getCorreo()).orElseThrow();
+        String token = jwtService.getToken(administrador);
         return authRespuesta.builder()
             .token(token)
             .build();
     }
 
-    // Método para registrar un nuevo usuario
+    // Método para registrar un nuevo administrador
     public authRespuesta register(registroPeticion request) {
         // Validar la seguridad de la contraseña
         if (!isPasswordSecure(request.getPassword())) {
             throw new IllegalArgumentException("La contraseña no cumple con los criterios de seguridad: " +
                 "Debe tener al menos 8 caracteres, incluir una letra mayúscula, un número y un carácter especial.");
         }
-        if (userRepository.existsByCorreo(request.getCorreo())) {
-            throw new IllegalArgumentException("El correo ya está en uso. Por favor, elija otro.");
-        }
+        //if (userRepository.existsByCorreo(request.getCorreo())) {
+        //    throw new IllegalArgumentException("El correo ya está en uso. Por favor, elija otro.");
+        //}
         
    
 
-        // Crear y guardar el usuario
-        usuario user = usuario.builder()
+        // Crear y guardar el administrador
+        administrador user = administrador.builder()
             .nombre(request.getNombre())
             .correo(request.getCorreo())
             .telefono(request.getTelefono())
@@ -66,7 +66,7 @@ public class authServicio {
             .rol(role.USER)
             .build();
 
-        userRepository.save(user);
+        userRepository.guardar(user);
 
         // Retornar el token de autenticación
         return authRespuesta.builder()

@@ -23,9 +23,9 @@ public class administradorServicio {
             return null;
         }
         return new administradorDTO(
-                admin.getIdAdministrador(),
+                admin.getId(),
                 admin.getNombre(),
-                admin.getCelular(),
+                admin.getTelefono(),
                 admin.getCorreo()
         );
     }
@@ -40,7 +40,7 @@ public class administradorServicio {
     }
 
     @Transactional
-    public void eliminarAdministradorPorId(int id) {
+    public void eliminarAdministradorPorId(Long id) {
         // Considerar validaciones: ej., no eliminar si tiene cafeterías activas,
         // o manejar la eliminación en cascada según la configuración de la entidad.
         repositorio.eliminar(id);
@@ -54,7 +54,7 @@ public class administradorServicio {
     }
 
     @Transactional(readOnly = true)
-    public administradorDTO buscarAdministradorPorId(int id) {
+    public administradorDTO buscarAdministradorPorId(Long id) {
         Optional<administrador> admin = repositorio.buscarPorId(id);
         return admin.map(this::convertirAAdministradorDTO).orElse(null); // O lanzar NotFoundException
     }
@@ -76,9 +76,9 @@ public class administradorServicio {
 
 
     @Transactional(readOnly = true)
-    public administradorDTO buscarAdministradorPorCelular(String celular) {
-        // La imagen del servicio dice "buscarCelular(String celular): administradorDTO"
-        Optional<administrador> admin = repositorio.findByCelular(celular);
+    public administradorDTO buscarAdministradorPorTelefono(String telefono) {
+        // La imagen del servicio dice "buscartelefono(String telefono): administradorDTO"
+        Optional<administrador> admin = repositorio.findByTelefono(telefono);
         return admin.map(this::convertirAAdministradorDTO).orElse(null); // O lanzar NotFoundException
     }
 
@@ -88,22 +88,4 @@ public class administradorServicio {
         return admin.map(this::convertirAAdministradorDTO).orElse(null); // O lanzar NotFoundException
     }
 
-    // Método para validar credenciales (ejemplo básico)
-    @Transactional(readOnly = true)
-    public Optional<administradorDTO> validarCredenciales(String correo, String contrasenaPlana) {
-        Optional<administrador> adminOpt = repositorio.findByCorreo(correo);
-        if (adminOpt.isPresent()) {
-            administrador admin = adminOpt.get();
-            // Aquí deberías comparar la contraseña plana con la almacenada (posiblemente encriptada).
-            // Si usas Spring Security con PasswordEncoder:
-            // if (passwordEncoder.matches(contrasenaPlana, admin.getConstrasena())) {
-            //     return Optional.of(convertirAAdministradorDTO(admin));
-            // }
-            // Por ahora, una comparación directa (NO RECOMENDADO PARA PRODUCCIÓN):
-            if (admin.getConstrasena().equals(contrasenaPlana)) {
-                return Optional.of(convertirAAdministradorDTO(admin));
-            }
-        }
-        return Optional.empty();
-    }
 }

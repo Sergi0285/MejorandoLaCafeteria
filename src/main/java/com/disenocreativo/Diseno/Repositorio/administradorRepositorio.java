@@ -17,7 +17,7 @@ public class administradorRepositorio {
         return administradorCRUD.findAll();
     }
 
-    public Optional<administrador> buscarPorId(int id) {
+    public Optional<administrador> buscarPorId(Long id) {
         return administradorCRUD.findById(id);
     }
 
@@ -25,7 +25,7 @@ public class administradorRepositorio {
         return administradorCRUD.save(admin);
     }
 
-    public void eliminar(int id) {
+    public void eliminar(Long id) {
         administradorCRUD.deleteById(id);
     }
 
@@ -33,8 +33,8 @@ public class administradorRepositorio {
         return administradorCRUD.findByNombreContainingIgnoreCase(nombre);
     }
 
-    public Optional<administrador> findByCelular(String celular) {
-        return administradorCRUD.findByCelular(celular);
+    public Optional<administrador> findByTelefono(String telefono) {
+        return administradorCRUD.findByTelefono(telefono);
     }
 
     public Optional<administrador> findByCorreo(String correo) {

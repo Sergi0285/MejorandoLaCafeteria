@@ -15,6 +15,6 @@ public interface cafeteriaCRUDrepositorio extends CrudRepository<cafeteria, Inte
 
     Optional<cafeteria> findByAdministrador(administrador administrador);
 
-    List<cafeteria> findByAdministradorIdAdministrador(int idAdministrador); 
+    List<cafeteria> findByAdministradorId(Long idAdministrador); 
 
 }

@@ -44,17 +44,22 @@ public class jwtFiltroAutenticacion extends OncePerRequestFilter{
         {
             UserDetails userDetails=userDetailsService.loadUserByUsername(username);
 
-            if (jwtService.isTokenValid(token, userDetails))
-            {
-                UsernamePasswordAuthenticationToken authToken= new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities());
+                if (jwtService.isTokenValid(token, userDetails))
+                {
+                    System.out.println("Token válido para usuario: " + userDetails.getUsername());
+                    System.out.println("Autoridades del usuario: " + userDetails.getAuthorities()); // Muy importante
 
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()); // Aquí se llama a administrador.getAuthorities()
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("Authentication object seteado en SecurityContext para: " + userDetails.getUsername());
+                } else {
+                    System.out.println("Token inválido para usuario: " + username);
+                }
 
         }
         

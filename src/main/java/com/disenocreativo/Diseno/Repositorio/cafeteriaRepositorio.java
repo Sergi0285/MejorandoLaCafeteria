@@ -46,7 +46,7 @@ public class cafeteriaRepositorio {
         return cafeteriaCRUD.findByAdministrador(admin);
     }
 
-    public List<cafeteria> findByAdministradorId(int idAdministrador) {
-        return cafeteriaCRUD.findByAdministradorIdAdministrador(idAdministrador);
+    public List<cafeteria> findByAdministradorId(Long idAdministrador) {
+        return cafeteriaCRUD.findByAdministradorId(idAdministrador);
     }
 }

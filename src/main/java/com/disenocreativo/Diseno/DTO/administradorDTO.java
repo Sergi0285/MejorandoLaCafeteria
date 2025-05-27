@@ -3,9 +3,9 @@ package com.disenocreativo.Diseno.DTO; // O el paquete que prefieras para DTOs
 // Este DTO se usará para las respuestas, omitiendo la contraseña.
 public class administradorDTO {
 
-    private int idAdministrador;
+    private Long id;
     private String nombre;
-    private String celular;
+    private String telefono;
     private String correo;
     // No incluimos 'contrasena' por seguridad.
     // Tampoco 'cafeteriasGestionadas' para mantener simple el DTO principal;
@@ -14,20 +14,20 @@ public class administradorDTO {
     public administradorDTO() {
     }
 
-    public administradorDTO(int idAdministrador, String nombre, String celular, String correo) {
-        this.idAdministrador = idAdministrador;
+    public administradorDTO(Long id, String nombre, String telefono, String correo) {
+        this.id = id;
         this.nombre = nombre;
-        this.celular = celular;
+        this.telefono = telefono;
         this.correo = correo;
     }
 
     // Getters y Setters
-    public int getIdAdministrador() {
-        return idAdministrador;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdAdministrador(int idAdministrador) {
-        this.idAdministrador = idAdministrador;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -38,12 +38,12 @@ public class administradorDTO {
         this.nombre = nombre;
     }
 
-    public String getCelular() {
-        return celular;
+    public String getTelefono() {
+        return telefono;
     }
 
-    public void setCelular(String celular) {
-        this.celular = celular;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public String getCorreo() {

@@ -11,13 +11,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.disenocreativo.Diseno.Repositorio.usuarioRepositorio;
+import com.disenocreativo.Diseno.Repositorio.administradorRepositorio;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
 public class configuracionApp {
-    private final usuarioRepositorio userRepositorio;
+    private final administradorRepositorio userRepositorio;
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
     {
@@ -41,6 +41,6 @@ public class configuracionApp {
     @Bean
     public UserDetailsService userDetailService() {
         return correo -> userRepositorio.findByCorreo(correo)
-            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+            .orElseThrow(() -> new UsernameNotFoundException("administrador no encontrado"));
     }
 }

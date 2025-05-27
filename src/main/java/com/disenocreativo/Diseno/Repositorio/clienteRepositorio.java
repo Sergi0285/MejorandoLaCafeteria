@@ -6,27 +6,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.disenocreativo.Diseno.Entidad.role;
-import com.disenocreativo.Diseno.Entidad.usuario;
+import com.disenocreativo.Diseno.Entidad.administrador;
 @Repository
 public class clienteRepositorio {
     @Autowired
     private clienteCRUDrepositorio clienteCRUD;
 
-    public usuario findByCorreo(String correo){
+    public administrador findByCorreo(String correo){
         return clienteCRUD.findByCorreo(correo);
     }    
 
     @SuppressWarnings("null")
-    public usuario guardaraUsuario (usuario m){
+    public administrador guardaraUsuario (administrador m){
         return clienteCRUD.save(m);
     }
 
     public role obtenerRolPorUsuario(String correo) {
-        usuario user = clienteCRUD.findByCorreo(correo);
+        administrador user = clienteCRUD.findByCorreo(correo);
         return user.getRol();
     }
 
-    public List<usuario> getAllUsuarios() {
-        return (List<usuario>) clienteCRUD.findAll();
+    public List<administrador> getAllUsuarios() {
+        return (List<administrador>) clienteCRUD.findAll();
     }
 }

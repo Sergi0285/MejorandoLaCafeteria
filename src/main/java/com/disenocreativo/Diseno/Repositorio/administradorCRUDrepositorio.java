@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface administradorCRUDrepositorio extends JpaRepository<administrador, Integer> {
+public interface administradorCRUDrepositorio extends JpaRepository<administrador, Long> {
 
     // Método para buscar administradores por nombre.
     // La imagen de administradorRepositorio indica List<Administrador>.
@@ -17,7 +17,7 @@ public interface administradorCRUDrepositorio extends JpaRepository<administrado
     // Método para buscar un administrador por su número de celular.
     // La imagen de administradorRepositorio indica Administrador.
     // Spring Data JPA generará la implementación. Usamos Optional para manejar nulidad.
-    Optional<administrador> findByCelular(String celular);
+    Optional<administrador> findByTelefono(String telefono);
 
     // Método para buscar un administrador por su correo (útil para logins o unicidad)
     Optional<administrador> findByCorreo(String correo);
