@@ -95,7 +95,7 @@ public class productoServicio {
              repositorio.guardarTodos(productosActualizar);
         }
     }
-    
+    /* 
     @Transactional(readOnly = true)
     public diaDTO ingredientesPorDia() {
         diaDTO dto = new diaDTO();
@@ -116,7 +116,7 @@ public class productoServicio {
             dto.setIngredientesPorDia(agrupacionProductosDelDia);
             return dto;
         }
-
+        
         // Ejemplo de Categoría 1: "BOWLS"
         // Productos que son bowls.
         List<producto> bowlsDelDia = todosLosProductosDisponibles.stream()
@@ -164,4 +164,5 @@ public class productoServicio {
         dto.setIngredientesPorDia(agrupacionProductosDelDia);
         return dto;
     }
+    */
 }

@@ -17,6 +17,7 @@ public class producto {
     private int idProducto;
 
     private String nombreProducto;
+    private int cantidad;
     private String descripcion;
     private double precio;
     private String tipo;
@@ -29,8 +30,6 @@ public class producto {
     @Column(columnDefinition="LONGBLOB")
     private byte[] imagenProducto;
 
-    private boolean disponible = true;
-
     @ManyToOne
     @JoinColumn(name = "cafeteria_id", nullable = false)
     private cafeteria cafeteria;
@@ -39,7 +38,7 @@ public class producto {
     public producto() {
     }
 
-    public producto(String nombreProducto, String descripcion, double precio, String tipo, String nivel, boolean esBowl, byte[] imagenProducto, boolean disponible, cafeteria cafeteria) {
+    public producto(String nombreProducto, String descripcion, double precio, String tipo, String nivel, boolean esBowl, byte[] imagenProducto, int cantidad, cafeteria cafeteria) {
         this.nombreProducto = nombreProducto;
         this.descripcion = descripcion;
         this.precio = precio;
@@ -47,7 +46,7 @@ public class producto {
         this.nivel = nivel;
         this.esBowl = esBowl;
         this.imagenProducto = imagenProducto;
-        this.disponible = disponible;
+        this.cantidad = cantidad;
         this.cafeteria = cafeteria;
     }
 
@@ -116,12 +115,12 @@ public class producto {
         this.imagenProducto = imagenProducto;
     }
 
-    public boolean isDisponible() {
-        return disponible;
+    public int getCantidad() {
+        return cantidad;
     }
 
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 
     public cafeteria getCafeteria() {

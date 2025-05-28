@@ -10,9 +10,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany; 
 import jakarta.persistence.CascadeType; 
 import java.time.LocalTime;
-import java.util.List; 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators; 
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idCafeteria")
 public class cafeteria {
 
     @Id
