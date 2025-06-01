@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -95,74 +96,45 @@ public class productoServicio {
              repositorio.guardarTodos(productosActualizar);
         }
     }
-    /* 
+
     @Transactional(readOnly = true)
     public diaDTO ingredientesPorDia() {
         diaDTO dto = new diaDTO();
-        Map<String, List<producto>> agrupacionProductosDelDia = new HashMap<>();
+        // El mapa ahora almacena List<Long> para los IDs de producto
+        Map<String, List<Integer>> almuerzosAgrupadosPorDia = new HashMap<>();
 
-        // Lógica para agrupar productos disponibles para el día sin modificar la entidad Producto.
-        // Se basa en categorizar los productos usando sus atributos existentes.
+        List<String> diasHabiles = Arrays.asList("LUN", "MAR", "MIER", "JUE", "VIER");
+        for (String dia : diasHabiles) {
+            almuerzosAgrupadosPorDia.put(dia, new ArrayList<Integer>()); // Inicializa con listas de Long
+        }
 
-        // Obtenemos todos los productos. Para optimizar, podrías hacer consultas más específicas
-        // al repositorio si ya tienes métodos para filtrar por tipo y disponibilidad.
-        List<producto> todosLosProductosDisponibles = repositorio.obtenerTodos().stream()
-                .filter(producto::isDisponible) // Solo productos disponibles
-                .collect(Collectors.toList()); // Convertimos el Stream a List
+        List<producto> todosLosProductos = repositorio.obtenerTodos();
+        // 2. Filtrar productos que son "Almuerzo"
+        List<producto> almuerzosDisponibles = todosLosProductos.stream()
+                .filter(p -> "Almuerzo".equalsIgnoreCase(p.getNivel()))
+                .collect(Collectors.toList());
 
-        if (todosLosProductosDisponibles.isEmpty()) {
-            // Si no hay productos disponibles, devolver DTO con mapa vacío.
-            // El controlador ya maneja NO_CONTENT para este caso.
-            dto.setIngredientesPorDia(agrupacionProductosDelDia);
+        if (almuerzosDisponibles.isEmpty()) {
+            dto.setIngredientesPorDia(almuerzosAgrupadosPorDia); // Mapa con listas de IDs vacías
             return dto;
         }
-        
-        // Ejemplo de Categoría 1: "BOWLS"
-        // Productos que son bowls.
-        List<producto> bowlsDelDia = todosLosProductosDisponibles.stream()
-                .filter(producto::isEsBowl) // Usamos el campo 'esBowl'
-                .collect(Collectors.toList());
 
-        if (!bowlsDelDia.isEmpty()) {
-            agrupacionProductosDelDia.put("BOWLS_DEL_DIA", bowlsDelDia);
+        // 3. Procesar cada almuerzo disponible para asignar su ID a los días correspondientes
+        for (producto almuerzo : almuerzosDisponibles) {
+            String descripcionDias = almuerzo.getDescripcion();
+            if (descripcionDias != null && !descripcionDias.trim().isEmpty()) {
+                String[] diasParaEsteAlmuerzo = descripcionDias.toUpperCase().split(",");
+                for (String dia : diasParaEsteAlmuerzo) {
+                    String diaTrimmed = dia.trim();
+                    if (almuerzosAgrupadosPorDia.containsKey(diaTrimmed)) {
+                        // Añade solo el ID del producto a la lista
+                        almuerzosAgrupadosPorDia.get(diaTrimmed).add(almuerzo.getIdProducto());
+                    }
+                }
+            }
         }
 
-        // Ejemplo de Categoría 2: "PLATOS_PRINCIPALES"
-        // Productos cuyo tipo sea "PlatoPrincipal" (o como lo tengas definido).
-        // Es importante que el campo 'tipo' se use de forma consistente en tus datos.
-        final String TIPO_PLATO_PRINCIPAL = "PlatoPrincipal"; // Ajusta este valor a tu data
-        List<producto> platosPrincipalesDelDia = todosLosProductosDisponibles.stream()
-                .filter(p -> TIPO_PLATO_PRINCIPAL.equalsIgnoreCase(p.getTipo()))
-                .collect(Collectors.toList());
-
-        if (!platosPrincipalesDelDia.isEmpty()) {
-            agrupacionProductosDelDia.put("PLATOS_PRINCIPALES_HOY", platosPrincipalesDelDia);
-        }
-
-        // Ejemplo de Categoría 3: "BEBIDAS"
-        final String TIPO_BEBIDA = "Bebida"; // Ajusta este valor
-        List<producto> bebidasDelDia = todosLosProductosDisponibles.stream()
-                .filter(p -> TIPO_BEBIDA.equalsIgnoreCase(p.getTipo()))
-                .collect(Collectors.toList());
-
-        if (!bebidasDelDia.isEmpty()) {
-            agrupacionProductosDelDia.put("BEBIDAS_DISPONIBLES", bebidasDelDia);
-        }
-
-        // Ejemplo de Categoría 4: "POSTRES"
-        final String TIPO_POSTRE = "Postre"; // Ajusta este valor
-        List<producto> postresDelDia = todosLosProductosDisponibles.stream()
-                .filter(p -> TIPO_POSTRE.equalsIgnoreCase(p.getTipo()))
-                .collect(Collectors.toList());
-        
-        if (!postresDelDia.isEmpty()) {
-            agrupacionProductosDelDia.put("POSTRES_RECOMENDADOS", postresDelDia);
-        }
-        
-        // Puedes añadir más categorías según tus necesidades:
-
-        dto.setIngredientesPorDia(agrupacionProductosDelDia);
+        dto.setIngredientesPorDia(almuerzosAgrupadosPorDia);
         return dto;
     }
-    */
 }

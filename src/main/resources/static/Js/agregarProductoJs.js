@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 descripcion: descripcion.trim() === "" ? null : descripcion,
                 precio: precio,
                 tipo: null, 
-                nivel: null,
+                nivel: "no",
                 esBowl: false, 
                 cantidad: cantidad, 
                 cafeteria: { 

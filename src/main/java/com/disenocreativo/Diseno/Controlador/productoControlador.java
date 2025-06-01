@@ -144,7 +144,7 @@ public class productoControlador {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    /* 
+    
     @GetMapping("/ingredientesPorDia")
     public ResponseEntity<diaDTO> ingredientesPorDia() {
         try {
@@ -157,7 +157,7 @@ public class productoControlador {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    */
+    
     
     // Endpoint de actualización para un producto específico (más RESTful que el guardar para actualizar)
     @PutMapping("/{id}")
