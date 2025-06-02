@@ -18,7 +18,7 @@ public class cafeteriaControlador {
     private cafeteriaServicio servicio;
 
     // Guardar una nueva cafetería
-    @PostMapping
+    @PostMapping("/guardar")
     public ResponseEntity<cafeteria> guardar(@RequestBody cafeteria c) {
         try {
             cafeteria cafeteriaGuardada = servicio.guardarCafeteria(c);

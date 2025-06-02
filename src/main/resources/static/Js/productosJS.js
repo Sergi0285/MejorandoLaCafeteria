@@ -1,43 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = 'http://localhost:8080/productos';
-    const token = localStorage.getItem('token');
+    const INTERACCION_BASE_URL = 'http://localhost:8080/interaccion';
 
     // --- DOM Elements ---
-    const desayunoTab = document.getElementById('desayuno-tab'); //
-    const almuerzoTab = document.getElementById('almuerzo-tab'); //
-    const desayunoContentContainer = document.querySelector('#desayuno > .tab-content.text-center'); //
-    // const almuerzoDayContentContainerBase = document.querySelector('#almuerzo > .tab-content'); // // No se usa directamente, se usan los panes.
-
-    const lunchDayTabs = { //
-        LUN: document.getElementById('lunesAlmuerzo-tab'), //
-        MAR: document.getElementById('martesAlmuerzo-tab'), //
-        MIER: document.getElementById('miercolesAlmuerzo-tab'), //
-        JUE: document.getElementById('juevesAlmuerzo-tab'), //
-        VIER: document.getElementById('viernesAlmuerzo-tab') //
+    const desayunoTab = document.getElementById('desayuno-tab');
+    const almuerzoTab = document.getElementById('almuerzo-tab');
+    const desayunoContentContainer = document.querySelector('#desayuno > .tab-content.text-center');
+    const lunchDayTabs = {
+        LUN: document.getElementById('lunesAlmuerzo-tab'),
+        MAR: document.getElementById('martesAlmuerzo-tab'),
+        MIER: document.getElementById('miercolesAlmuerzo-tab'),
+        JUE: document.getElementById('juevesAlmuerzo-tab'),
+        VIER: document.getElementById('viernesAlmuerzo-tab')
     };
-    const lunchDayContentPanes = { //
-        LUN: document.getElementById('lunesAlmuerzo'), //
-        MAR: document.getElementById('martesAlmuerzo'), //
-        MIER: document.getElementById('miercolesAlmuerzo'), //
-        JUE: document.getElementById('juevesAlmuerzo'), //
-        VIER: document.getElementById('viernesAlmuerzo') //
+    const lunchDayContentPanes = {
+        LUN: document.getElementById('lunesAlmuerzo'),
+        MAR: document.getElementById('martesAlmuerzo'),
+        MIER: document.getElementById('miercolesAlmuerzo'),
+        JUE: document.getElementById('juevesAlmuerzo'),
+        VIER: document.getElementById('viernesAlmuerzo')
     };
-    const carouselInner = document.querySelector('#productosCarrusel .carousel-inner'); //
+    const carouselInner = document.querySelector('#productosCarrusel .carousel-inner');
 
     // --- ID de la Cafetería para filtrar ---
-    const ID_CAFETERIA_FILTRO = 6;
-    let productosFiltradosCafeteria = []; // Almacenará los productos de la cafetería 6
+    const ID_CAFETERIA_FILTRO = 2;
+    let productosFiltradosCafeteria = [];
 
     // --- Helper Functions ---
     async function fetchData(url, options = {}) {
-        const headers = new Headers({
-            'Content-Type': 'application/json',
-        });
-        if (token) {
-            headers.append('Authorization', 'Bearer ' + token);
-        }
+        const headers = new Headers({ 'Content-Type': 'application/json' });
         options.headers = headers;
-
         try {
             const response = await fetch(url, options);
             if (!response.ok) {
@@ -47,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return null;
             }
             if (response.status === 204 || response.headers.get("content-length") === "0") {
-                 return []; 
+                return [];
             }
             return await response.json();
         } catch (error) {
@@ -61,18 +53,138 @@ document.addEventListener('DOMContentLoaded', () => {
         return `data:image/jpeg;base64,${base64String}`;
     }
 
-    function createLikeDislikeHtml(likes = 0, dislikes = 0) {
-        const randomLikes = Math.floor(Math.random() * 50) + 100;
-        const randomDislikes = Math.floor(Math.random() * 10) + 1;
+    /**
+     * Genera el HTML para el contenedor de Me gusta / No me gusta.
+     * Recibe el idProducto y dayKey (por ejemplo "DESAYUNO", "LUN", "MAR", etc.)
+     */
+    function createLikeDislikeHtml(idProducto, dayKey) {
         return `
-            <div class="like-dislike-container">
-                <span>👍 ${randomLikes} Me gusta</span>
-                <span>👎 ${randomDislikes} No me gusta</span>
+            <div class="like-dislike-container" data-producto-id="${idProducto}" data-day-key="${dayKey}">
+                <button class="btn-like btn btn-light me-2">
+                    👍 <span class="like-count">0</span>
+                </button>
+                <button class="btn-dislike btn btn-light">
+                    👎 <span class="dislike-count">0</span>
+                </button>
             </div>
         `;
     }
 
-    // --- Función para cargar todos los productos de la cafetería especificada ---
+    /**
+     * Recorre todos los contenedores .like-dislike-container que ya estén en el DOM,
+     * obtiene sus contadores actuales desde GET /interaccion/producto/{idProducto},
+     * y atacha los listeners para POST /interaccion/{idProducto}/megusta o /nogusta.
+     * Además, si en localStorage ya existe 'interaccion_{idProducto}_{dayKey}', deshabilita ambos botones.
+     */
+    function attachLikeDislikeHandlers() {
+        const containers = document.querySelectorAll('.like-dislike-container');
+        containers.forEach(container => {
+            const idProducto = container.dataset.productoId;
+            const dayKey     = container.dataset.dayKey;
+            const likeSpan   = container.querySelector('.like-count');
+            const dislikeSpan= container.querySelector('.dislike-count');
+            const btnLike    = container.querySelector('.btn-like');
+            const btnDislike = container.querySelector('.btn-dislike');
+
+            // Clave localStorage por producto + día
+            const claveLocal = `interaccion_${idProducto}_${dayKey}`;
+
+            // Si ya votó en ESTE día, deshabilitar botones
+            if (localStorage.getItem(claveLocal)) {
+                btnLike.disabled    = true;
+                btnDislike.disabled = true;
+            }
+
+            // 1) Obtener conteo actual (global) desde backend
+            fetch(`${INTERACCION_BASE_URL}/producto/${idProducto}`)
+                .then(res => res.json())
+                .then(data => {
+                    likeSpan.textContent    = data.meGusta ?? 0;
+                    dislikeSpan.textContent = data.noGusta ?? 0;
+                })
+                .catch(err => {
+                    console.error(`Error al obtener interaccion de producto ${idProducto}:`, err);
+                });
+
+            // 2) Listener para "Me gusta"
+            btnLike.addEventListener('click', () => {
+                if (localStorage.getItem(claveLocal)) return;
+
+                fetch(`${INTERACCION_BASE_URL}/${idProducto}/megusta`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                    .then(res => {
+                        if (!res.ok) {
+                            console.error(`Error POST /megusta de ${idProducto}: ${res.status}`);
+                            return;
+                        }
+                        // Guardar en localStorage y deshabilitar botones
+                        localStorage.setItem(claveLocal, 'votado');
+                        btnLike.disabled    = true;
+                        btnDislike.disabled = true;
+                        // Recargar contadores
+                        return fetch(`${INTERACCION_BASE_URL}/producto/${idProducto}`);
+                    })
+                    .then(res2 => {
+                        if (!res2) return;
+                        if (!res2.ok) {
+                            console.error(`Error al recargar conteo megusta ${idProducto}: ${res2.status}`);
+                            return;
+                        }
+                        return res2.json();
+                    })
+                    .then(data2 => {
+                        if (!data2) return;
+                        likeSpan.textContent    = data2.meGusta ?? 0;
+                        dislikeSpan.textContent = data2.noGusta ?? 0;
+                    })
+                    .catch(err => {
+                        console.error(`Error al procesar megusta de ${idProducto}:`, err);
+                    });
+            });
+
+            // 3) Listener para "No me gusta"
+            btnDislike.addEventListener('click', () => {
+                if (localStorage.getItem(claveLocal)) return;
+
+                fetch(`${INTERACCION_BASE_URL}/${idProducto}/nogusta`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                    .then(res => {
+                        if (!res.ok) {
+                            console.error(`Error POST /nogusta de ${idProducto}: ${res.status}`);
+                            return;
+                        }
+                        // Guardar en localStorage y deshabilitar botones
+                        localStorage.setItem(claveLocal, 'votado');
+                        btnLike.disabled    = true;
+                        btnDislike.disabled = true;
+                        // Recargar contadores
+                        return fetch(`${INTERACCION_BASE_URL}/producto/${idProducto}`);
+                    })
+                    .then(res2 => {
+                        if (!res2) return;
+                        if (!res2.ok) {
+                            console.error(`Error al recargar conteo nogusta ${idProducto}: ${res2.status}`);
+                            return;
+                        }
+                        return res2.json();
+                    })
+                    .then(data2 => {
+                        if (!data2) return;
+                        likeSpan.textContent    = data2.meGusta ?? 0;
+                        dislikeSpan.textContent = data2.noGusta ?? 0;
+                    })
+                    .catch(err => {
+                        console.error(`Error al procesar nogusta de ${idProducto}:`, err);
+                    });
+            });
+        });
+    }
+
+    // --- Cargar productos de la cafetería ---
     async function cargarProductosDeCafeteria() {
         const url = `${API_BASE_URL}/porCafeteria/${ID_CAFETERIA_FILTRO}`;
         const productos = await fetchData(url);
@@ -80,13 +192,14 @@ document.addEventListener('DOMContentLoaded', () => {
             productosFiltradosCafeteria = productos;
         } else {
             productosFiltradosCafeteria = [];
-            console.error(`No se pudieron cargar productos para la cafetería ${ID_CAFETERIA_FILTRO}. Las secciones podrían aparecer vacías.`);
-            // Opcionalmente, mostrar un mensaje al usuario en la página
-            if(desayunoContentContainer) desayunoContentContainer.innerHTML = `<p>Error al cargar productos de la cafetería. Intente más tarde.</p>`;
+            console.error(`No se pudieron cargar productos para la cafetería ${ID_CAFETERIA_FILTRO}.`);
+            if (desayunoContentContainer) {
+                desayunoContentContainer.innerHTML = `<p>Error al cargar productos. Intente más tarde.</p>`;
+            }
         }
     }
 
-    // --- Breakfast Logic (Modificada) ---
+    // --- Logic de Desayunos (dayKey = "DESAYUNO") ---
     async function loadDesayunos() {
         if (!desayunoContentContainer) {
             console.error("Breakfast content container not found.");
@@ -98,11 +211,10 @@ document.addEventListener('DOMContentLoaded', () => {
             desayunoDayTabsElement.style.display = 'none';
         }
 
-        // Filtrar de la lista precargada
+        // Filtrar productos con nivel === 'Desayuno'
         const productosDesayuno = productosFiltradosCafeteria.filter(p => p.nivel === 'Desayuno');
-
         if (!productosDesayuno || productosDesayuno.length === 0) {
-            desayunoContentContainer.innerHTML = '<p>No hay desayunos disponibles por el momento para esta cafetería.</p>';
+            desayunoContentContainer.innerHTML = '<p>No hay desayunos disponibles en este momento.</p>';
             return;
         }
 
@@ -114,34 +226,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 desayunoContentContainer.appendChild(rowDiv);
             }
             const colDiv = document.createElement('div');
-            colDiv.className = 'col-md-3 mb-3'; // Ajustado de acuerdo a la conversación previa
+            colDiv.className = 'col-md-3 mb-3';
 
             const productoHtml = `
                 <div class="combo-card mx-auto h-100">
-                    <img src="${createProductImageSrc(producto.imagenProducto)}" alt="${producto.nombreProducto}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 5px 5px 0 0;">
+                    <img src="${createProductImageSrc(producto.imagenProducto)}"
+                         alt="${producto.nombreProducto}"
+                         style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 5px 5px 0 0;">
                     <div style="padding: 15px;">
                         <h5>${producto.nombreProducto}</h5>
                         <p><strong>Precio: $${producto.precio.toLocaleString('es-CO')}</strong></p>
-                        ${createLikeDislikeHtml()}
+                        ${ createLikeDislikeHtml(producto.idProducto, 'DESAYUNO') }
                     </div>
                 </div>
             `;
             colDiv.innerHTML = productoHtml;
             if (rowDiv) rowDiv.appendChild(colDiv);
         });
+
+        // Una vez renderizado todo, atachamos los handlers
+        attachLikeDislikeHandlers();
     }
 
-    // --- Lunch Logic (Modificada) ---
+    // --- Logic de Almuerzos (dayKey variable) ---
     let ingredientesPorDiaGlobal = null;
-
     async function fetchIngredientesPorDia() {
-        // Esta función no cambia, ya que define el "plan" del menú, no los detalles del producto en sí.
         if (!ingredientesPorDiaGlobal) {
             const data = await fetchData(`${API_BASE_URL}/ingredientesPorDia`);
             if (data && data.ingredientesPorDia) {
                 ingredientesPorDiaGlobal = data.ingredientesPorDia;
             } else {
-                console.error("Failed to fetch or parse ingredientesPorDia");
+                console.error("Failed to fetch o parse ingredientesPorDia");
                 ingredientesPorDiaGlobal = {};
             }
         }
@@ -149,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadAlmuerzosPorDia(dayKey) {
-        const container = lunchDayContentPanes[dayKey]; //
+        const container = lunchDayContentPanes[dayKey];
         if (!container) {
             console.error(`Container for ${dayKey} lunch not found.`);
             return;
@@ -164,46 +279,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const productoIds = ingredientesMap[dayKey];
         const productosDelDia = [];
-
         for (const id of productoIds) {
-            // Buscar el producto por ID en la lista precargada y filtrada de la cafetería
-            // Asegúrate que 'idProducto' es el nombre correcto del campo ID en tus objetos de producto.
-            // Podría ser 'id' o 'IDProducto', etc., dependiendo de tu backend.
-            const producto = productosFiltradosCafeteria.find(p => p.idProducto === id); 
+            const producto = productosFiltradosCafeteria.find(p => p.idProducto === id);
             if (producto) {
                 productosDelDia.push(producto);
             } else {
-                console.warn(`Producto con ID ${id} (planificado para ${dayKey}) no encontrado en la cafetería ${ID_CAFETERIA_FILTRO} o no existe.`);
+                console.warn(`Producto con ID ${id} (planificado para ${dayKey}) no encontrado.`);
             }
         }
 
         if (productosDelDia.length === 0) {
-            container.innerHTML = '<div class="text-center"><p>No se pudieron cargar los detalles de los almuerzos para este día en esta cafetería.</p></div>';
+            container.innerHTML = '<div class="text-center"><p>No se pudieron cargar los almuerzos de este día.</p></div>';
             return;
         }
 
         renderAlmuerzoDelDia(productosDelDia, container, dayKey);
+        attachLikeDislikeHandlers();
     }
-    
+
     function renderAlmuerzoDelDia(productos, container, dayKey) {
-        container.innerHTML = ''; 
-        const dayNames = { LUN: "Lunes", MAR: "Martes", MIER: "Miércoles", JUE: "Jueves", VIER: "Viernes"};
+        container.innerHTML = '';
+        const dayNames = { LUN: "Lunes", MAR: "Martes", MIER: "Miércoles", JUE: "Jueves", VIER: "Viernes" };
         const comboDelDiaCard = document.createElement('div');
         comboDelDiaCard.className = 'combo-card mx-auto p-3';
         comboDelDiaCard.innerHTML = `<h4 class="text-center mb-4">Combo ${dayNames[dayKey]} - Almuerzo Completo</h4>`;
 
         const tiposDeProductoConfig = {
-            Proteina: { titulo: 'Proteína:', productos: [], tipoValor: "Proteina" },
+            Proteina:       { titulo: 'Proteína:', productos: [], tipoValor: "Proteina" },
             Acompanamiento: { titulo: 'Acompañamiento:', productos: [], tipoValor: "Acompanamiento" },
-            Ensalada: { titulo: 'Ensalada:', productos: [], tipoValor: "Ensalada" },
-            Carbohidrato: { titulo: 'Carbohidrato:', productos: [], tipoValor: "Carbohidrato" },
-            Sopa: { titulo: 'Sopa del Día:', productos: [], tipoValor: "Sopa" },
-            Jugo: { titulo: 'Jugo del Día:', productos: [], tipoValor: "Jugo" }
+            Ensalada:       { titulo: 'Ensalada:', productos: [], tipoValor: "Ensalada" },
+            Carbohidrato:   { titulo: 'Carbohidrato:', productos: [], tipoValor: "Carbohidrato" },
+            Sopa:           { titulo: 'Sopa del Día:', productos: [], tipoValor: "Sopa" },
+            Jugo:           { titulo: 'Jugo del Día:', productos: [], tipoValor: "Jugo" }
         };
 
         productos.forEach(p => {
-            const tipoKey = Object.keys(tiposDeProductoConfig).find(key => tiposDeProductoConfig[key].tipoValor === p.tipo);
-            if (tipoKey && tiposDeProductoConfig[tipoKey]) {
+            const tipoKey = Object.keys(tiposDeProductoConfig)
+                .find(key => tiposDeProductoConfig[key].tipoValor === p.tipo);
+            if (tipoKey) {
                 tiposDeProductoConfig[tipoKey].productos.push(p);
             }
         });
@@ -223,16 +336,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         sectionDiv.appendChild(categoryRowDiv);
                     }
                     const productColDiv = document.createElement('div');
-                    productColDiv.className = 'col-md-3 mb-3'; // Usando col-md-5 como se ajustó antes
+                    productColDiv.className = 'col-md-3 mb-3';
 
                     const productCardHtml = `
-                        <div class="">
-                            <img src="${createProductImageSrc(p.imagenProducto)}" alt="${p.nombreProducto}" style="width: 100%; max-height: 180px; object-fit: cover; border-radius: 5px 5px 0 0;">
+                        <div>
+                            <img src="${createProductImageSrc(p.imagenProducto)}" alt="${p.nombreProducto}"
+                                 style="width: 100%; max-height: 180px; object-fit: cover; border-radius: 5px 5px 0 0;">
                             <div style="padding: 10px;" class="d-flex flex-column justify-content-between">
                                 <div>
                                     <p class="mt-1 mb-2 text-center" style="font-size: 1em;">${p.nombreProducto}</p>
                                 </div>
-                                ${createLikeDislikeHtml()}
+                                ${ createLikeDislikeHtml(p.idProducto, dayKey) }
                             </div>
                         </div>
                     `;
@@ -240,32 +354,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (categoryRowDiv) categoryRowDiv.appendChild(productColDiv);
                 });
             } else {
-                sectionDiv.innerHTML += '<p class="text-muted" style="font-size: 0.9em;"><em>Hoy no se encuentran productos de este tipo para el combo.</em></p>';
+                sectionDiv.innerHTML += '<p class="text-muted" style="font-size: 0.9em;"><em>Hoy no hay productos de este tipo.</em></p>';
             }
             comboDelDiaCard.appendChild(sectionDiv);
         }
-        
+
         let comboPrice = 14700;
         const priceParagraph = document.createElement('p');
         priceParagraph.className = 'text-center mt-4';
         priceParagraph.innerHTML = `<strong>Precio Total del Combo: $${comboPrice.toLocaleString('es-CO')}</strong>`;
         comboDelDiaCard.appendChild(priceParagraph);
+
         container.appendChild(comboDelDiaCard);
     }
 
-    // --- Carousel Logic (Modificada) ---
+    // --- Carrusel (sin Me gusta / No me gusta) ---
     async function loadCarouselProductos() {
         if (!carouselInner) {
             console.error("Carousel inner container not found.");
             return;
         }
-        carouselInner.innerHTML = ''; 
+        carouselInner.innerHTML = '';
 
-        // Filtrar de la lista precargada
         const productosCarousel = productosFiltradosCafeteria.filter(p => p.nivel === 'no');
-
         if (!productosCarousel || productosCarousel.length === 0) {
-            carouselInner.innerHTML = '<div class="carousel-item active"><p class="text-center">No hay productos destacados por el momento para esta cafetería.</p></div>';
+            carouselInner.innerHTML = '<div class="carousel-item active"><p class="text-center">No hay productos destacados.</p></div>';
             return;
         }
 
@@ -293,6 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 rowDiv.appendChild(colDiv);
             });
+
             carouselItemDiv.appendChild(rowDiv);
             carouselInner.appendChild(carouselItemDiv);
         }
@@ -300,24 +414,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Tab Event Listeners & Initial Load ---
     function setupTabListeners() {
-        if (desayunoTab) { //
-            desayunoTab.addEventListener('shown.bs.tab', () => { //
+        if (desayunoTab) {
+            desayunoTab.addEventListener('shown.bs.tab', () => {
                 loadDesayunos();
-                Object.values(lunchDayTabs).forEach(tab => tab?.classList.remove('active')); //
-                Object.values(lunchDayContentPanes).forEach(pane => pane?.classList.remove('show', 'active')); //
-                const desayunoDailyTabsContainer = document.getElementById('desayunoTabs'); //
-                if (desayunoDailyTabsContainer) desayunoDailyTabsContainer.style.display = 'none'; //
+                Object.values(lunchDayTabs).forEach(tab => tab?.classList.remove('active'));
+                Object.values(lunchDayContentPanes).forEach(pane => pane?.classList.remove('show', 'active'));
+                const desayunoDailyTabsContainer = document.getElementById('desayunoTabs');
+                if (desayunoDailyTabsContainer) desayunoDailyTabsContainer.style.display = 'none';
             });
         }
 
-        if (almuerzoTab) { //
-            almuerzoTab.addEventListener('shown.bs.tab', () => { //
-                if(desayunoContentContainer) desayunoContentContainer.innerHTML = ''; //
-                
-                // Activar Lunes por defecto
+        if (almuerzoTab) {
+            almuerzoTab.addEventListener('shown.bs.tab', () => {
+                if (desayunoContentContainer) desayunoContentContainer.innerHTML = '';
+
                 const LUNES_KEY = 'LUN';
-                if (lunchDayTabs[LUNES_KEY]) { //
-                     // Desactivar otras pestañas de almuerzo antes de mostrar Lunes
+                if (lunchDayTabs[LUNES_KEY]) {
                     for (const dayKey in lunchDayTabs) {
                         if (dayKey !== LUNES_KEY) {
                             lunchDayTabs[dayKey]?.classList.remove('active');
@@ -325,60 +437,59 @@ document.addEventListener('DOMContentLoaded', () => {
                             lunchDayContentPanes[dayKey]?.classList.remove('show', 'active');
                         }
                     }
-                    // Activar Lunes
                     lunchDayTabs[LUNES_KEY].classList.add('active');
                     lunchDayTabs[LUNES_KEY].setAttribute('aria-selected', 'true');
-                    if (lunchDayContentPanes[LUNES_KEY]) { //
+                    if (lunchDayContentPanes[LUNES_KEY]) {
                         lunchDayContentPanes[LUNES_KEY].classList.add('show', 'active');
                     }
                     loadAlmuerzosPorDia(LUNES_KEY);
                 } else {
-                    loadAlmuerzosPorDia(LUNES_KEY); // Fallback
+                    loadAlmuerzosPorDia(LUNES_KEY);
                 }
             });
         }
 
-        for (const dayKey in lunchDayTabs) { //
-            const tabElement = lunchDayTabs[dayKey]; //
+        for (const dayKey in lunchDayTabs) {
+            const tabElement = lunchDayTabs[dayKey];
             if (tabElement) {
-                tabElement.addEventListener('shown.bs.tab', () => { //
+                tabElement.addEventListener('shown.bs.tab', () => {
                     loadAlmuerzosPorDia(dayKey);
                 });
             }
         }
     }
-    
+
     async function initializePage() {
-        const desayunoDayTabsUL = document.getElementById('desayunoTabs'); //
-        if (desayunoDayTabsUL) desayunoDayTabsUL.style.display = 'none'; //
-        
-        const desayunoDayContentWrappers = document.querySelectorAll('#desayuno > .tab-content > .tab-pane'); //
-        desayunoDayContentWrappers.forEach(wrapper => { //
-            if (wrapper.id !== 'desayuno') { //
-                 wrapper.innerHTML = ''; //
-                 wrapper.classList.remove('active', 'show'); //
+        const desayunoDayTabsUL = document.getElementById('desayunoTabs');
+        if (desayunoDayTabsUL) desayunoDayTabsUL.style.display = 'none';
+
+        const desayunoDayContentWrappers = document.querySelectorAll('#desayuno > .tab-content > .tab-pane');
+        desayunoDayContentWrappers.forEach(wrapper => {
+            if (wrapper.id !== 'desayuno') {
+                wrapper.innerHTML = '';
+                wrapper.classList.remove('active', 'show');
             }
         });
-        
-        if (desayunoContentContainer) { //
-             desayunoContentContainer.innerHTML = ''; //
+
+        if (desayunoContentContainer) {
+            desayunoContentContainer.innerHTML = '';
         }
 
-        // 1. Cargar todos los productos de la cafetería especificada
+        // 1. Cargar productos de la cafetería
         await cargarProductosDeCafeteria();
 
-        // 2. Pre-cargar el plan de ingredientes para los almuerzos
-        await fetchIngredientesPorDia(); 
+        // 2. Pre-cargar plan de ingredientes para almuerzos
+        await fetchIngredientesPorDia();
 
         // 3. Configurar listeners para las pestañas
-        setupTabListeners(); //
+        setupTabListeners();
 
-        // 4. Cargar contenido de la pestaña activa inicial y el carrusel
-        if (desayunoTab && desayunoTab.classList.contains('active')) { //
+        // 4. Cargar contenido inicial según la pestaña activa
+        if (desayunoTab && desayunoTab.classList.contains('active')) {
             await loadDesayunos();
-        } else if (almuerzoTab && almuerzoTab.classList.contains('active')) { //
+        } else if (almuerzoTab && almuerzoTab.classList.contains('active')) {
             const LUNES_KEY = 'LUN';
-            if (lunchDayTabs[LUNES_KEY] && lunchDayContentPanes[LUNES_KEY]) { //
+            if (lunchDayTabs[LUNES_KEY] && lunchDayContentPanes[LUNES_KEY]) {
                 for (const dayKey in lunchDayTabs) {
                     if (dayKey !== LUNES_KEY) {
                         lunchDayTabs[dayKey]?.classList.remove('active');
@@ -392,12 +503,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 await loadAlmuerzosPorDia(LUNES_KEY);
             }
         } else {
-            // Si ninguna pestaña principal está marcada como activa, cargar desayunos por defecto
             await loadDesayunos();
         }
-        
-        await loadCarouselProductos(); //
+
+        // 5. Cargar el carrusel de productos
+        await loadCarouselProductos();
     }
 
-    initializePage(); //
+    initializePage();
 });

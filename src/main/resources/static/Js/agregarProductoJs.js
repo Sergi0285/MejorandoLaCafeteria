@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 esBowl: false, 
                 cantidad: cantidad, 
                 cafeteria: { 
-                    idCafeteria: 6
+                    idCafeteria: 3
                 }
             };
 

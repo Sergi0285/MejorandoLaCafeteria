@@ -17,7 +17,8 @@ public class configuracionSeguridad {
     private final AuthenticationProvider authProvider;
   private final String[] whitelist={"/auth/**","/clienteControlador/**","/Css/**","/assets/**","/Html/**","/Js/**","/Imagenes/**","/vendor/**",
   "index.html","src/main/resources/static/Recursos/Imagenes/**","/Recursos/Imagenes/**","/Recursos/**","/Recursos/Css/**","/Recursos/Js/**","/Recursos/vendor/**",
-  "/productoControlador/**","/productos/**","/cafeterias/**","/cafeteriaControlador/**","/cafeterias","/Js/agregarProducto.js","/img/**"};
+  "/productoControlador/**","/productos/**","/cafeterias/**","/cafeteriaControlador/**","/cafeterias","/Js/agregarProducto.js","/img/**","/interaccionControlador/**",
+  "/interaccion/**", "/Js/productosJS.js", "/Js/productosCaf2JS.js", "/Js/productosCaf3JS.js"};
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {

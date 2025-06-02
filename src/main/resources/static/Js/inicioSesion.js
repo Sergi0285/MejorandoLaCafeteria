@@ -60,7 +60,7 @@ $(document).ready(function () {
             },
             success: function (role) {
               if (role === 'ADMIN') {
-                window.location.href = "/Html/service.html";
+                window.location.href = "/Html/agregarProducto.html";
               } else if (role === 'USER') {
                 window.location.href = "/index.html";
               } else {
