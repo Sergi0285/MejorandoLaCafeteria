@@ -1,13 +1,16 @@
 package com.disenocreativo.Diseno.Servicio;
 
+import com.disenocreativo.Diseno.DTO.productoFavoritoDTO;
 import com.disenocreativo.Diseno.Entidad.interaccion;
 import com.disenocreativo.Diseno.Entidad.producto;
 import com.disenocreativo.Diseno.Repositorio.interaccionRepositorio;
 import com.disenocreativo.Diseno.Repositorio.productoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,6 +101,27 @@ public class interaccionServicio {
     public void anadirNoGusta(int idProducto) {
         interaccion inter = buscarInterProducto(idProducto);
         repositorio.incrementarNoGusta(idProducto);
+    }
+
+    @Transactional(readOnly = true)
+    public List<productoFavoritoDTO> favoritos(){
+        List<interaccion> interacciones = listarInterMeGusta();
+        List<productoFavoritoDTO> favoritos = new ArrayList<>();
+        for (interaccion i : interacciones) {
+            Optional<producto> prodOpt = productoRepo.buscarPorId(i.getProducto().getIdProducto());
+            if (prodOpt.isPresent()) {
+                producto prod = prodOpt.get();
+                productoFavoritoDTO dto = new productoFavoritoDTO();
+                dto.setI(i);
+                dto.setNombreProducto(prod.getNombreProducto());
+                dto.setDescripcionProducto(prod.getDescripcion());
+                dto.setPrecioProducto(String.valueOf(prod.getPrecio()));
+                dto.setNombreCafeteria(prod.getCafeteria().getNombreCafeteria());
+                dto.setImagenProducto(prod.getImagenProducto());
+                favoritos.add(dto);
+            }
+        }
+        return favoritos;
     }
     
 }

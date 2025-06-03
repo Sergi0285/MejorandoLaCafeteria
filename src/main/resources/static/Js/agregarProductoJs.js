@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 esBowl: false, 
                 cantidad: null, 
                 cafeteria: { 
-                    idCafeteria: 6
+                    idCafeteria: 1
                 }
             };
 
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 esBowl: false,
                 cantidad: null,
                 cafeteria: {
-                    idCafeteria: 6
+                    idCafeteria: 1
                 }
             };
 
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 esBowl: false, 
                 cantidad: cantidad, 
                 cafeteria: { 
-                    idCafeteria: 3
+                    idCafeteria: 1
                 }
             };
 

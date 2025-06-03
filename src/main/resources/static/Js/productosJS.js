@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const carouselInner = document.querySelector('#productosCarrusel .carousel-inner');
 
     // --- ID de la Cafetería para filtrar ---
-    const ID_CAFETERIA_FILTRO = 2;
+    const ID_CAFETERIA_FILTRO = 1;
     let productosFiltradosCafeteria = [];
 
     // --- Helper Functions ---

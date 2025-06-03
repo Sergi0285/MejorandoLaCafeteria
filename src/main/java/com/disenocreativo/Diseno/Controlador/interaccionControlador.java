@@ -1,5 +1,6 @@
 package com.disenocreativo.Diseno.Controlador;
 
+import com.disenocreativo.Diseno.DTO.productoFavoritoDTO;
 import com.disenocreativo.Diseno.Entidad.interaccion;
 import com.disenocreativo.Diseno.Servicio.interaccionServicio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,4 +102,10 @@ public class interaccionControlador {
         }
     }
 
+
+    @GetMapping("/favoritos")
+    public ResponseEntity<List<productoFavoritoDTO>> favotitos() {
+        List<productoFavoritoDTO> lista = servicio.favoritos();
+        return new ResponseEntity<>(lista, HttpStatus.OK);
+    }
 }
