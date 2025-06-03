@@ -127,27 +127,39 @@
     <!-- Video Modal End -->
 
 
-    <!-- Frase Divertida Start -->
-<div class="container-fluid py-5 bg-light">
+<!-- Frase Divertida Dinámica (sin Thymeleaf) -->
+<div class="container-fluid py-5 bg-light" id="fraseContainer">
     <div class="container">
-        <div class="row gx-5 align-items-center">
-            <div class="col-lg-5 mb-4 mb-lg-0">
-                <div class="position-relative h-100 rounded overflow-hidden shadow-sm">
-                    <img class="w-100 h-100" src="/Recursos/img/comida.gif" alt="Comida divertida" style="object-fit: cover;">
-                </div>
-            </div>
-            <div class="col-lg-7">
-                <div class="bg-white p-4 rounded shadow-sm">
-                    <h2 class="text-primary font-secondary mb-3">🍽️ Frase del Día</h2>
-                    <p class="lead fw-bold mb-0">
-                        Hoy es un gran día para devorar conocimiento... ¡y almuerzo también! 😋📚
-                    </p>
-                </div>
-            </div>
+      <div class="row gx-5 align-items-center">
+        
+        <!-- IZQUIERDA: imagen (por defecto GIF) -->
+        <div class="col-lg-5 mb-4 mb-lg-0">
+          <div class="position-relative h-100 rounded overflow-hidden shadow-sm">
+            <!-- Imagen por defecto -->
+            <img
+              id="imgAviso"
+              src="/Recursos/img/comida.gif"
+              alt="Comida divertida"
+              class="w-100 h-100"
+              style="object-fit: cover;"
+            />
+          </div>
         </div>
+  
+        <!-- DERECHA: título + fecha (la fecha irá en <p id="fechaAviso">) -->
+        <div class="col-lg-7">
+          <div class="bg-white p-4 rounded shadow-sm">
+            <!-- Título fijo -->
+            <h2 class="text-primary font-secondary mb-3">🍽️ Frase del Día</h2>
+            <!-- Aquí insertaremos la fecha (solo si hay un aviso) -->
+            <p id="fechaAviso" class="text-muted small mb-0"></p>
+          </div>
+        </div>
+  
+      </div>
     </div>
-</div>
-<!-- Frase Divertida End -->
+  </div>
+  <!-- Fin Frase Divertida Dinámica -->
 <!-- Sección de Platos Favoritos -->
 <section class="container my-5">
     <div class="text-center mb-5">
@@ -259,6 +271,8 @@
 
     <!-- Template Javascript -->
     <script src="Js/main.js"></script>
+    <script src="Js/cargarAviso.js"></script>
+    <script src="Js/subirAviso.js"></script>
 </body>
 
 </html>

@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     dislikeSpan.textContent = data.noGusta ?? 0;
                 })
                 .catch(err => {
-                    console.error(`Error al obtener interaccion de producto ${idProducto}:`, err);
+                    console.error(`Error al obtener interacción de producto ${idProducto}:`, err);
                 });
 
             // 2) Listener para "Me gusta"
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     .then(res2 => {
                         if (!res2) return;
                         if (!res2.ok) {
-                            console.error(`Error al recargar conteo megusta ${idProducto}: ${res2.status}`);
+                            console.error(`Error al recargar conteo meGusta ${idProducto}: ${res2.status}`);
                             return;
                         }
                         return res2.json();
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         dislikeSpan.textContent = data2.noGusta ?? 0;
                     })
                     .catch(err => {
-                        console.error(`Error al procesar megusta de ${idProducto}:`, err);
+                        console.error(`Error al procesar meGusta de ${idProducto}:`, err);
                     });
             });
 
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                     .then(res => {
                         if (!res.ok) {
-                            console.error(`Error POST /nogusta de ${idProducto}: ${res.status}`);
+                            console.error(`Error POST /noGusta de ${idProducto}: ${res.status}`);
                             return;
                         }
                         // Guardar en localStorage y deshabilitar botones
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     .then(res2 => {
                         if (!res2) return;
                         if (!res2.ok) {
-                            console.error(`Error al recargar conteo nogusta ${idProducto}: ${res2.status}`);
+                            console.error(`Error al recargar conteo noGusta ${idProducto}: ${res2.status}`);
                             return;
                         }
                         return res2.json();
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         dislikeSpan.textContent = data2.noGusta ?? 0;
                     })
                     .catch(err => {
-                        console.error(`Error al procesar nogusta de ${idProducto}:`, err);
+                        console.error(`Error al procesar noGusta de ${idProducto}:`, err);
                     });
             });
         });
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="padding: 15px;">
                         <h5>${producto.nombreProducto}</h5>
                         <p><strong>Precio: $${producto.precio.toLocaleString('es-CO')}</strong></p>
-                        ${ createLikeDislikeHtml(producto.idProducto, 'DESAYUNO') }
+                        ${createLikeDislikeHtml(producto.idProducto, 'DESAYUNO')}
                     </div>
                 </div>
             `;
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <div>
                                     <p class="mt-1 mb-2 text-center" style="font-size: 1em;">${p.nombreProducto}</p>
                                 </div>
-                                ${ createLikeDislikeHtml(p.idProducto, dayKey) }
+                                ${createLikeDislikeHtml(p.idProducto, dayKey)}
                             </div>
                         </div>
                     `;
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(comboDelDiaCard);
     }
 
-    // --- Carrusel (sin Me gusta / No me gusta) ---
+    // --- Carrusel (con Me gusta / No me gusta) ---
     async function loadCarouselProductos() {
         if (!carouselInner) {
             console.error("Carousel inner container not found.");
@@ -401,6 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p class="text-muted">${producto.descripcion || 'Descripción no disponible.'}</p>
                             <p><strong>$${producto.precio.toLocaleString('es-CO')}</strong></p>
                             <span class="badge bg-success">Disponibles: ${producto.cantidad}</span>
+                            ${createLikeDislikeHtml(producto.idProducto, 'PRODUCTO')}
                         </div>
                     </div>
                 `;
@@ -410,6 +411,9 @@ document.addEventListener('DOMContentLoaded', () => {
             carouselItemDiv.appendChild(rowDiv);
             carouselInner.appendChild(carouselItemDiv);
         }
+
+        // Una vez que los botones de like/dislike están en el DOM, atachamos sus handlers
+        attachLikeDislikeHandlers();
     }
 
     // --- Tab Event Listeners & Initial Load ---
@@ -506,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadDesayunos();
         }
 
-        // 5. Cargar el carrusel de productos
+        // 5. Cargar el carrusel de productos (con Me gusta / No me gusta)
         await loadCarouselProductos();
     }
 

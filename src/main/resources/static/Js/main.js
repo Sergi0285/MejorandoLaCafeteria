@@ -46,7 +46,7 @@
     });
     
     
-    // Back to top button
+    /* Back to top button
     $(window).scroll(function () {
         if ($(this).scrollTop() > 100) {
             $('.back-to-top').fadeIn('slow');
@@ -59,6 +59,7 @@
         return false;
     });
 
+    */
 
     // Facts counter
     $('[data-toggle="counter-up"]').counterUp({
