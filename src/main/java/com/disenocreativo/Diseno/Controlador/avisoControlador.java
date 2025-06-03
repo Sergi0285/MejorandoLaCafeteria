@@ -14,9 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/avisos")
@@ -73,16 +72,11 @@ public class avisoControlador {
     }
 
     /**
-     * 4) Buscar avisos por cafetería (y devolverlos ordenados de más reciente a más antiguo)
+     * 4) Buscar avisos por cafetería
      */
     @GetMapping("/cafeteria/{idCafeteria}")
     public ResponseEntity<List<aviso>> buscarAvPorCafeteria(@PathVariable("idCafeteria") Integer idCafeteria) {
-        List<aviso> avisos = avisoServicio.buscarAvisCafeteria(idCafeteria);
-
-        // Ordenamos por fechaPublicacion descendente (del más reciente al más antiguo)
-        Collections.sort(avisos, Comparator.comparing(aviso::getFechaPublicacion).reversed());
-
-        return new ResponseEntity<>(avisos, HttpStatus.OK);
+        return new ResponseEntity<>(avisoServicio.buscarAvisCafeteria(idCafeteria), HttpStatus.OK);
     }
 
     /**
@@ -112,5 +106,5 @@ public class avisoControlador {
         headers.setContentLength(av.getAviso().length);
         return new ResponseEntity<>(av.getAviso(), headers, HttpStatus.OK);
     }
-
+    
 }

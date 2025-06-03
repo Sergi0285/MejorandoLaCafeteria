@@ -45,4 +45,7 @@ public class avisoRepositorio {
     public List<aviso> findAvisoByFechaPublicacion(LocalDate fecha) {
         return avisoCRUD.findByFechaPublicacion(fecha);
     }
+
+    
+    
 }

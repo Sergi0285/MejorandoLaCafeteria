@@ -34,15 +34,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
   
         if (respuesta.ok) {
-          alert('Aviso subido correctamente.');
-          // 4.3) Recargamos la página para que se actualice la sección de “Frase Divertida”
-          window.location.reload();
+          // ----- ÉXITO: reemplaza alert por Swal.fire -----
+          Swal.fire({
+            icon: 'success',
+            title: 'Aviso subido correctamente',
+            showConfirmButton: false,
+            timer: 1500
+          }).then(() => {
+            // 4.3) Recargamos la página para que se actualice la sección de “Frase Divertida”
+            window.location.reload();
+          });
         } else {
+          // Extraemos el texto de error que devuelva el servidor
           const textoError = await respuesta.text();
-          alert(`Error al subir el aviso (${respuesta.status}): ${textoError}`);
+          // ----- ERROR EN LA RESPUESTA HTTP: Swal.fire con icono de error -----
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al subir el aviso',
+            text: `(${respuesta.status}): ${textoError}`,
+            confirmButtonText: 'Aceptar'
+          });
         }
       } catch (err) {
-        alert('No se pudo conectar al servidor: ' + err.message);
+        // ----- ERROR DE CONEXIÓN / EXCEPCIÓN: Swal.fire con icono de error -----
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudo conectar al servidor',
+          text: err.message,
+          confirmButtonText: 'Aceptar'
+        });
       }
     });
-});
+  });

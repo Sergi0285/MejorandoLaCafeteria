@@ -12,4 +12,5 @@ import java.util.List;
 public interface avisoCRUDrepositorio extends CrudRepository<aviso, Integer>{
     List<aviso> findByCafeteria(cafeteria cafeteria);
     List<aviso> findByFechaPublicacion(LocalDate fechaPublicacion);
+    
 }
