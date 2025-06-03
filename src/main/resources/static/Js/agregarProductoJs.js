@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 esBowl: false, 
                 cantidad: null, 
                 cafeteria: { 
-                    idCafeteria: 6
+                    idCafeteria: 8
                 }
             };
 
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 esBowl: false,
                 cantidad: null,
                 cafeteria: {
-                    idCafeteria: 6
+                    idCafeteria: 8
                 }
             };
 
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 esBowl: false, 
                 cantidad: cantidad, 
                 cafeteria: { 
-                    idCafeteria: 6
+                    idCafeteria: 8
                 }
             };
 
@@ -452,12 +452,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const trimmedDescInput = descripcionInputVal.trim();
             const indiceEspacio = trimmedDescInput.indexOf(' ');
             if (indiceEspacio !== -1) {
-                payloadActualizacion.tipo = trimmedDescInput.substring(0, indiceEspacio).trim();
+                payloadActualizacion.descripcion = trimmedDescInput.substring(0, indiceEspacio).trim();
                 const descProcesada = trimmedDescInput.substring(indiceEspacio + 1).trim();
-                payloadActualizacion.descripcion = descProcesada === "" ? null : descProcesada;
             } else {
-                payloadActualizacion.tipo = trimmedDescInput;
-                payloadActualizacion.descripcion = null;
+                payloadActualizacion.descripcion = trimmedDescInput;
             }
         }
         // Si el campo 'descripcionActualizarProducto' está vacío, 'tipo' y 'descripcion'
