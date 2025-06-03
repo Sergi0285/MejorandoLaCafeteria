@@ -157,7 +157,16 @@
   <!-- Admin Section End -->
   
     <!-- Back to Top -->
-    <a href="#" class="btn btn-primary border-inner py-3 fs-4 back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <a href="#" id="btnSubirAviso" class="btn btn-primary border-inner py-3 fs-4"
+    style="
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: block; /* Fuerza a que esté siempre visible */
+    ">
+    <i class="bi bi-arrow-up"></i>
+    </a>
 
     <!-- JavaScript Libraries -->
      <script src="../Js/agregarProductoJs.js"></script>
@@ -168,8 +177,11 @@
     <script src="../Recursos/lib/counterup/counterup.min.js"></script>
     <script src="../Recursos/lib/owlcarousel/owl.carousel.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Template Javascript -->
     <script src="../Js/main.js"></script>
+    <script src="../Js/subirAviso.js"></script>
 </body>
 
 </html>

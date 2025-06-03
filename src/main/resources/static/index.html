@@ -75,9 +75,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto mx-lg-auto py-0">
-            <a href="Html/productos.html" class="nav-item nav-link">Cafetria Principal</a>
-            <a href="Html/productosCaf2.html" class="nav-item nav-link">Cafetria de Prime</a>
-            <a href="Html/productosCaf3.html" class="nav-item nav-link">Cafetria de Sombrillas Azules</a>
+            <a href="Html/productos.html" class="nav-item nav-link">Cafeteria Principal</a>
+            <a href="Html/productosCaf2.html" class="nav-item nav-link">Cafeteria de Prime</a>
+            <a href="Html/productosCaf3.html" class="nav-item nav-link">Cafeteria de Sombrillas Azules</a>
             <a href="Html/inicioSesion.html" class="nav-item nav-link">Inicio de Administradores</a>
         </div>
     </div>
@@ -127,27 +127,39 @@
     <!-- Video Modal End -->
 
 
-    <!-- Frase Divertida Start -->
-<div class="container-fluid py-5 bg-light">
+<!-- Frase Divertida Dinámica (sin Thymeleaf) -->
+<div class="container-fluid py-5 bg-light" id="fraseContainer">
     <div class="container">
-        <div class="row gx-5 align-items-center">
-            <div class="col-lg-5 mb-4 mb-lg-0">
-                <div class="position-relative h-100 rounded overflow-hidden shadow-sm">
-                    <img class="w-100 h-100" src="/Recursos/img/comida.gif" alt="Comida divertida" style="object-fit: cover;">
-                </div>
-            </div>
-            <div class="col-lg-7">
-                <div class="bg-white p-4 rounded shadow-sm">
-                    <h2 class="text-primary font-secondary mb-3">🍽️ Frase del Día</h2>
-                    <p class="lead fw-bold mb-0">
-                        Hoy es un gran día para devorar conocimiento... ¡y almuerzo también! 😋📚
-                    </p>
-                </div>
-            </div>
+      <div class="row gx-5 align-items-center">
+        
+        <!-- IZQUIERDA: imagen (por defecto GIF) -->
+        <div class="col-lg-5 mb-4 mb-lg-0">
+          <div class="position-relative h-100 rounded overflow-hidden shadow-sm">
+            <!-- Imagen por defecto -->
+            <img
+              id="imgAviso"
+              src="/Recursos/img/comida.gif"
+              alt="Comida divertida"
+              class="w-100 h-100"
+              style="object-fit: cover;"
+            />
+          </div>
         </div>
+  
+        <!-- DERECHA: título + fecha (la fecha irá en <p id="fechaAviso">) -->
+        <div class="col-lg-7">
+          <div class="bg-white p-4 rounded shadow-sm">
+            <!-- Título fijo -->
+            <h2 class="text-primary font-secondary mb-3">🍽️ Frase del Día</h2>
+            <!-- Aquí insertaremos la fecha (solo si hay un aviso) -->
+            <p id="fechaAviso" class="text-muted small mb-0"></p>
+          </div>
+        </div>
+  
+      </div>
     </div>
-</div>
-<!-- Frase Divertida End -->
+  </div>
+  <!-- Fin Frase Divertida Dinámica -->
 <!-- Sección de Platos Favoritos -->
 <section class="container my-5">
     <div class="text-center mb-5">
@@ -211,7 +223,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="team-item">
                         <div class="position-relative overflow-hidden">
-                            <a href="about.html">
+                            <a href="/Html/productos.html">
                                 <img class="img-fluid w-100" src="/Recursos/img/cafe1.jpg" alt="">
                             </a>
                         </div>
@@ -223,7 +235,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="team-item">
                         <div class="position-relative overflow-hidden">
-                            <a href="team.html">
+                            <a href="/Html/productosCaf2.html">
                                 <img class="img-fluid w-100" src="/Recursos/img/cafe1.jpg" alt="">
                             </a>
                         </div>
@@ -235,7 +247,7 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="team-item">
                         <div class="position-relative overflow-hidden">
-                            <a href="menu.html">
+                            <a href="/Html/productosCaf3.html">
                                 <img class="img-fluid w-100" src="/Recursos/img/cafe1.jpg" alt="">
                             </a>
                         </div>
@@ -259,6 +271,8 @@
 
     <!-- Template Javascript -->
     <script src="Js/main.js"></script>
+    <script src="Js/cargarAviso.js"></script>
+    <script src="Js/subirAviso.js"></script>
 </body>
 
 </html>
