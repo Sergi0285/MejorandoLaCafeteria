@@ -2,6 +2,7 @@ package com.disenocreativo.Diseno.Seguridad;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,11 +16,8 @@ import lombok.RequiredArgsConstructor;
 public class configuracionSeguridad {
     private final jwtFiltroAutenticacion jwtAuthenticationFilter;
     private final AuthenticationProvider authProvider;
-  private final String[] whitelist={"/auth/**","/clienteControlador/**","/Css/**","/assets/**","/Html/**","/Js/**","/Imagenes/**","/vendor/**",
-  "index.html","src/main/resources/static/Recursos/Imagenes/**","/Recursos/Imagenes/**","/Recursos/**","/Recursos/Css/**","/Recursos/Js/**","/Recursos/vendor/**",
-  "/productoControlador/**","/productos/**","/cafeterias/**","/cafeteriaControlador/**","/cafeterias","/Js/agregarProducto.js","/img/**","/interaccionControlador/**",
-  "/interaccion/**", "/Js/productosJS.js", "/Js/productosCaf2JS.js", "/Js/productosCaf3JS.js","/api/avisos/**","/Js/main.js", "/Js/subirAviso.js", "/Js/cargarAviso.js",
-  "/avisoControlador/**"};
+  private final String[] whitelist={"/auth/**","/clienteControlador/**","/Css/**","/Html/**","/Js/**",
+  "index.html","/Recursos/**","/cafeterias/**", "/interaccion/**","/api/avisos/**", "/avisoControlador/**"};
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
@@ -29,6 +27,7 @@ public class configuracionSeguridad {
                 .disable())
             .authorizeHttpRequests(authRequest ->
               authRequest
+                .requestMatchers(HttpMethod.GET, "/productos/**").permitAll()
                 .requestMatchers(whitelist).permitAll()
                 .anyRequest().authenticated()
                 )

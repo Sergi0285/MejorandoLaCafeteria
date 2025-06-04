@@ -1,7 +1,5 @@
 package com.disenocreativo.Diseno.DTO;
 
-import com.disenocreativo.Diseno.Entidad.interaccion;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
@@ -14,7 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class productoFavoritoDTO {
-    private interaccion i;
+    private int meGusta;
+    private int noGusta;
+    private int idProducto;
     private String nombreProducto;
     private String descripcionProducto;
     private String precioProducto;

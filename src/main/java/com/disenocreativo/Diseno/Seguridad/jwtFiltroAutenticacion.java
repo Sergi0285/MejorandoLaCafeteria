@@ -28,41 +28,41 @@ public class jwtFiltroAutenticacion extends OncePerRequestFilter{
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-       
+    
         final String token = getTokenFromRequest(request);
         final String username;
-
-        if (token==null)
-        {
+    
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        username=jwtService.getUsernameFromToken(token);
-
-        if (username!=null && SecurityContextHolder.getContext().getAuthentication()==null)
-        {
-            UserDetails userDetails=userDetailsService.loadUserByUsername(username);
-
-                if (jwtService.isTokenValid(token, userDetails))
-                {
-                    System.out.println("Token válido para usuario: " + userDetails.getUsername());
-                    System.out.println("Autoridades del usuario: " + userDetails.getAuthorities()); // Muy importante
-
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()); // Aquí se llama a administrador.getAuthorities()
-
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                    System.out.println("Authentication object seteado en SecurityContext para: " + userDetails.getUsername());
-                } else {
-                    System.out.println("Token inválido para usuario: " + username);
-                }
-
+    
+        try {
+            username = jwtService.getUsernameFromToken(token);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token inválido o malformado");
+            return;
         }
-        
+    
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    
+            if (jwtService.isTokenValid(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
+    
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token expirado o no válido");
+                return;
+            }
+        }
+    
         filterChain.doFilter(request, response);
     }
 

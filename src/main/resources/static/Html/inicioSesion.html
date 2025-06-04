@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
-    <title>CakeZone - Cake Shop Website Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CakeZone - Cafeterías</title>
 
     <!-- Favicon -->
     <link href="../Recursos/img/favicon.ico" rel="icon">
@@ -20,43 +21,32 @@
     <!-- Libraries Stylesheet -->
     <link href="../Recursos/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
+    <!-- Bootstrap & Custom CSS -->
     <link href="../Css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Link al archivo CSS separado -->
     <link href="../Css/inicio.css" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Topbar Start -->
+    <!-- Topbar Start (Solo visible en pantallas grandes) -->
     <div class="container-fluid px-0 d-none d-lg-block">
         <div class="row gx-0">
-            <div class="col-lg-4 text-center bg-secondary py-3">
-                <div class="d-inline-flex align-items-center justify-content-center">
-                    <div class="text-start">
-                    </div>
-                </div>
-            </div>
+            <div class="col-lg-4 text-center bg-secondary py-3"></div>
             <div class="col-lg-4 text-center bg-primary border-inner py-3">
                 <a href="../index.html" class="d-inline-flex align-items-center justify-content-center text-decoration-none">
                     <img src="../Recursos/img/logo.png" alt="Logo" class="me-3" style="height: 50px;">
                     <h1 class="m-0 text-uppercase text-white">Cafeterías</h1>
                 </a>
             </div>
-            <div class="col-lg-4 text-center bg-secondary py-3">
-                <div class="d-inline-flex align-items-center justify-content-center">
-                    <div class="text-start">
-                    </div>
-                </div>
-            </div>
+            <div class="col-lg-4 text-center bg-secondary py-3"></div>
         </div>
     </div>
     <!-- Topbar End -->
 
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-0">
-        <a href="../index.html" class="navbar-brand d-block d-lg-none">
-            <h1 class="m-0 text-uppercase text-white"><i class="fa fa-birthday-cake fs-1 text-primary me-3"></i>CakeZone</h1>
+        <a href="../index.html" class="navbar-brand d-block d-lg-none d-flex align-items-center">
+            <img src="../Recursos/img/logo.png" alt="Logo" class="me-2" style="height: 40px;">
+            <h1 class="m-0 text-uppercase text-white">Cafeterías</h1>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
@@ -69,42 +59,40 @@
     </nav>
     <!-- Navbar End -->
 
-<!-- Login Visual Start -->
-<div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
-  <div class="bg-dark text-white p-5 rounded shadow-lg" style="max-width: 400px; width: 100%;">
-    <h2 class="text-center text-uppercase mb-4">Iniciar Sesión</h2>
+    <!-- Login Form Start -->
+    <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="bg-dark text-white p-5 rounded shadow-lg" style="max-width: 400px; width: 100%;">
+            <h2 class="text-center text-uppercase mb-4">Iniciar Sesión</h2>
 
-    <!-- Campo de Correo -->
-    <div class="mb-4">
-      <label for="usuarioInput" class="mb-2 text-white-50">Correo</label>
-      <div class="input-group">
-        <span class="input-group-text bg-secondary border-0 text-white-50">
-          <i class="fa fa-user"></i>
-        </span>
-        <input type="text" id="usuarioInput" class="form-control bg-secondary text-white border-0" placeholder="Escribe tu correo..." />
-      </div>
+            <!-- Campo de Correo -->
+            <div class="mb-4">
+                <label for="usuarioInput" class="mb-2 text-white-50">Correo</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-secondary border-0 text-white-50">
+                        <i class="fa fa-user"></i>
+                    </span>
+                    <input type="text" id="usuarioInput" class="form-control bg-secondary text-white border-0" placeholder="Escribe tu correo...">
+                </div>
+            </div>
+
+            <!-- Campo de Contraseña -->
+            <div class="mb-4">
+                <label for="passwordInput" class="mb-2 text-white-50">Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-secondary border-0 text-white-50">
+                        <i class="fa fa-lock"></i>
+                    </span>
+                    <input type="password" id="passwordInput" class="form-control bg-secondary text-white border-0" placeholder="********">
+                </div>
+            </div>
+
+            <!-- Botón de Ingreso -->
+            <div class="d-grid">
+                <button id="loginBtn" class="btn btn-primary text-uppercase fw-bold">Entrar</button>
+            </div>
+        </div>
     </div>
-
-    <!-- Campo de Contraseña -->
-    <div class="mb-4">
-      <label for="passwordInput" class="mb-2 text-white-50">Contraseña</label>
-      <div class="input-group">
-        <span class="input-group-text bg-secondary border-0 text-white-50">
-          <i class="fa fa-lock"></i>
-        </span>
-        <input type="password" id="passwordInput" class="form-control bg-secondary text-white border-0" placeholder="********" />
-      </div>
-    </div>
-
-    <!-- Botón de Ingreso -->
-    <div class="d-grid">
-      <button id="loginBtn" class="btn btn-primary text-uppercase fw-bold">Entrar</button>
-    </div>
-  </div>
-</div>
-<!-- Login Visual End -->
-
-
+    <!-- Login Form End -->
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -114,10 +102,9 @@
     <script src="../Recursos/lib/counterup/counterup.min.js"></script>
     <script src="../Recursos/lib/owlcarousel/owl.carousel.min.js"></script>
 
-    <!-- Template Javascript -->
+    <!-- Scripts Propios -->
     <script src="../Js/inicioSesion.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </body>
 
 </html>

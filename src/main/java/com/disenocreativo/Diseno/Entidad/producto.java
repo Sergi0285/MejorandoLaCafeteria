@@ -8,6 +8,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -36,6 +37,7 @@ public class producto {
 
     @ManyToOne
     @JoinColumn(name = "cafeteria_id", nullable = false)
+    @JsonBackReference
     private cafeteria cafeteria;
 
     // Constructores

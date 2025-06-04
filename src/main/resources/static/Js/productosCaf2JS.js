@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const carouselInner = document.querySelector('#productosCarrusel .carousel-inner');
 
     // --- ID de la Cafetería para filtrar ---
-    const ID_CAFETERIA_FILTRO = 4;
+    const ID_CAFETERIA_FILTRO = 2;
     let productosFiltradosCafeteria = [];
 
     // --- Helper Functions ---
@@ -33,11 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const headers = new Headers({
             'Content-Type': 'application/json',
         });
-        if (token) {
-            headers.append('Authorization', 'Bearer ' + token);
-        }
         options.headers = headers;
-
         try {
             const response = await fetch(url, options);
             if (!response.ok) {

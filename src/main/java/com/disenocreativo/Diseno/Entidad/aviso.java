@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class aviso {
 
@@ -13,6 +15,7 @@ public class aviso {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cafeteria_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private cafeteria cafeteria;
 
     @Lob

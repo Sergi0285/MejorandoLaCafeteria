@@ -1,17 +1,54 @@
 let token = localStorage.getItem('token');
 
-function verificarTokenYRedireccionarALogin() {
-
-    // Verificar si el token está presente
-    if (token === null) {
-        // Si el token no está presente, redirigir al usuario al inicio de sesión
+async function verificarRespuestaAutenticacion(response) {
+    if (response.status === 401) {
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Sesión expirada',
+            text: 'Tu sesión ha expirado o el token es inválido. Por favor, inicia sesión de nuevo.',
+            confirmButtonText: 'Ir al login'
+        });
         window.location.href = '/Html/inicioSesion.html';
-        var tokenParts = token.split('.');
-        var tokenPayload = JSON.parse(atob(tokenParts[1]));
-        var username=tokenPayload.sub;
-        console.log(username);
+        return false;
+    }
+    return true;
+}
+
+
+function verificarTokenYRedireccionarALogin() {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Sin sesión',
+            text: 'Por favor, inicia sesión para continuar.',
+            confirmButtonText: 'Ir al login'
+        }).then(() => {
+            window.location.href = '/Html/inicioSesion.html';
+        });
+        return;
+    }
+
+    try {
+        const tokenParts = token.split('.');
+        const tokenPayload = JSON.parse(atob(tokenParts[1]));
+        const username = tokenPayload.sub;
+        console.log("Usuario del token:", username);
+    } catch (error) {
+        console.error('Error al decodificar token:', error);
+        localStorage.removeItem('token');
+        Swal.fire({
+            icon: 'error',
+            title: 'Token inválido',
+            text: 'El token almacenado no es válido. Por favor, vuelve a iniciar sesión.',
+            confirmButtonText: 'Ir al login'
+        }).then(() => {
+            window.location.href = '/Html/inicioSesion.html';
+        });
     }
 }
+
 
 verificarTokenYRedireccionarALogin();
 
@@ -83,10 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tipo: null, 
                 nivel: "Desayuno",
                 esBowl: false, 
-                cantidad: null, 
-                cafeteria: { 
-                    idCafeteria: 1
-                }
+                cantidad: null
             };
 
             console.log('Payload JSON a enviar:', JSON.stringify(productoPayload, null, 2));
@@ -101,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: headers,
                 body: JSON.stringify(productoPayload),
             });
-
+            if (await verificarRespuestaAutenticacion(response)) return;
             if (response.ok) {
                 const resultado = await response.json(); 
                 console.log('Producto agregado:', resultado);
@@ -191,10 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tipo: tipoExtraido,                     // <--- VALOR ASIGNADO
                 nivel: "Almuerzo",
                 esBowl: false,
-                cantidad: null,
-                cafeteria: {
-                    idCafeteria: 1
-                }
+                cantidad: null
             };
 
             console.log('Payload JSON a enviar:', JSON.stringify(productoPayload, null, 2));
@@ -209,6 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: headers,
                 body: JSON.stringify(productoPayload),
             });
+
+            if (await verificarRespuestaAutenticacion(response)) return;
 
             if (response.ok) {
                 const resultado = await response.json();
@@ -278,10 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tipo: null, 
                 nivel: "no",
                 esBowl: false, 
-                cantidad: cantidad, 
-                cafeteria: { 
-                    idCafeteria: 1
-                }
+                cantidad: cantidad
             };
 
             console.log('Payload JSON a enviar:', JSON.stringify(productoPayload, null, 2));
@@ -296,6 +326,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: headers,
                 body: JSON.stringify(productoPayload),
             });
+
+            if (await verificarRespuestaAutenticacion(response)) return;
 
             if (response.ok) {
                 const resultado = await response.json(); 
@@ -356,6 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+            if (await verificarRespuestaAutenticacion(response)) return;
 
             if (responseBusqueda.status === 404) {
                 mensajeRespuesta.innerHTML = `<div class="alert alert-danger">Producto no encontrado: ${nombreParaBuscar}.</div>`;
@@ -504,6 +537,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify(payloadActualizacion)
             });
+
+            if (await verificarRespuestaAutenticacion(response)) return;
 
             if (responseActualizacion.ok) {
                 const productoActualizadoRes = await responseActualizacion.json(); // El backend devuelve el producto actualizado

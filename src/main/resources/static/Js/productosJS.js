@@ -231,8 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const productoHtml = `
                 <div class="combo-card mx-auto h-100">
                     <img src="${createProductImageSrc(producto.imagenProducto)}"
-                         alt="${producto.nombreProducto}"
-                         style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 5px 5px 0 0;">
+                        alt="${producto.nombreProducto}"
+                        style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 5px 5px 0 0;">
                     <div style="padding: 15px;">
                         <h5>${producto.nombreProducto}</h5>
                         <p><strong>Precio: $${producto.precio.toLocaleString('es-CO')}</strong></p>

@@ -1,6 +1,5 @@
 package com.disenocreativo.Diseno.DTO;
 
-import com.disenocreativo.Diseno.Entidad.producto;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;

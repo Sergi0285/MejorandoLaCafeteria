@@ -63,7 +63,7 @@ public class authServicio {
             .correo(request.getCorreo())
             .telefono(request.getTelefono())
             .password(passwordEncoder.encode(request.getPassword()))
-            .rol(role.USER)
+            .rol(role.ADMIN)
             .build();
 
         userRepository.guardar(user);

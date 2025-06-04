@@ -1,1 +1,0 @@
-Este archivo solo es para que se creen las carpetas del github, se eliminara a lo ultimo del proyecto

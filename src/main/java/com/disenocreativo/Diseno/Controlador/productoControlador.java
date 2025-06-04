@@ -2,10 +2,13 @@ package com.disenocreativo.Diseno.Controlador;
 
 import com.disenocreativo.Diseno.Entidad.producto;
 import com.disenocreativo.Diseno.Servicio.productoServicio;
-import com.disenocreativo.Diseno.DTO.diaDTO; 
+import com.disenocreativo.Diseno.DTO.diaDTO;
+import com.disenocreativo.Diseno.DTO.productoDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,9 +22,9 @@ public class productoControlador {
     private productoServicio servicio;
 
     @PostMapping
-    public ResponseEntity<producto> guardar(@RequestBody producto p) {
+    public ResponseEntity<producto> guardar(@RequestBody productoDTO p, Authentication auth) {
         try {
-            producto productoGuardado = servicio.guardarProducto(p);
+            producto productoGuardado = servicio.guardarProducto(p, auth);
             return new ResponseEntity<>(productoGuardado, HttpStatus.CREATED);
         } catch (RuntimeException e) { // Captura excepciones como la de cafetería no encontrada
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST); // O INTERNAL_SERVER_ERROR según el caso
@@ -62,7 +65,7 @@ public class productoControlador {
         try {
             Optional<producto> productoEncontrado = servicio.buscarProductoPorId(id);
             return productoEncontrado.map(prod -> new ResponseEntity<>(prod, HttpStatus.OK))
-                                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -161,7 +164,7 @@ public class productoControlador {
     
     // Endpoint de actualización para un producto específico (más RESTful que el guardar para actualizar)
     @PutMapping("/{id}")
-    public ResponseEntity<producto> actualizarProducto(@PathVariable int id, @RequestBody producto productoActualizado) {
+    public ResponseEntity<producto> actualizarProducto(@PathVariable int id, @RequestBody producto productoActualizado, Authentication auth) {
         try {
             Optional<producto> productoExistente = servicio.buscarProductoPorId(id);
             if (productoExistente.isPresent()) {

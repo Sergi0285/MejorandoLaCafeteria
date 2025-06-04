@@ -1,11 +1,16 @@
 package com.disenocreativo.Diseno.Servicio;
 
 import com.disenocreativo.Diseno.Entidad.producto;
+import com.disenocreativo.Diseno.Entidad.administrador;
 import com.disenocreativo.Diseno.Entidad.cafeteria; // Necesario para buscarCafeteria
 import com.disenocreativo.Diseno.Repositorio.productoRepositorio;
+import com.disenocreativo.Diseno.Repositorio.administradorRepositorio;
 import com.disenocreativo.Diseno.Repositorio.cafeteriaRepositorio; // Para obtener la entidad Cafeteria
 import com.disenocreativo.Diseno.DTO.diaDTO;
+import com.disenocreativo.Diseno.DTO.productoDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +32,35 @@ public class productoServicio {
     @Autowired
     private cafeteriaRepositorio cafeteriaRepo; // Para buscar la cafetería por ID
 
+    @Autowired
+    private administradorRepositorio adminRepo;
+
+    @Transactional
+    public producto guardarProducto(productoDTO product, Authentication auth) {
+        String name = auth.getName();
+        System.out.println("entro" + name);
+        administrador admin = adminRepo.findByCorreo(name).get();
+        System.out.println(admin);
+        cafeteria Cafe = cafeteriaRepo.findByAdministrador(admin).get();
+        System.out.println("Cafetería asociada: " + Cafe.getNombreCafeteria());
+
+        producto p = new producto();
+        // Validación: Asegurar que la cafetería asociada exista
+        p.setCafeteria(Cafe);
+        p.setNombreProducto(product.getNombreProducto());
+        p.setDescripcion(product.getDescripcion());
+        p.setTipo(product.getTipo());
+        p.setNivel(product.getNivel());
+        p.setPrecio(product.getPrecio());
+        p.setCantidad(product.getCantidad());
+        p.setImagenProducto(product.getImagenProducto());
+        p.setEsBowl(product.isEsBowl());
+
+        return repositorio.guardar(p);
+    }
+
     @Transactional
     public producto guardarProducto(producto p) {
-        // Validación: Asegurar que la cafetería asociada exista
-        if (p.getCafeteria() != null && p.getCafeteria().getIdCafeteria() != 0) {
-            Optional<cafeteria> caf = cafeteriaRepo.buscarPorId(p.getCafeteria().getIdCafeteria());
-            if (caf.isEmpty()) {
-                // Considera lanzar una excepción personalizada aquí
-                throw new RuntimeException("Cafetería no encontrada con ID: " + p.getCafeteria().getIdCafeteria());
-            }
-            p.setCafeteria(caf.get()); // Asignar la entidad Cafeteria gestionada
-        } else if (p.getCafeteria() == null || p.getCafeteria().getIdCafeteria() == 0) {
-             throw new RuntimeException("El producto debe estar asociado a una cafetería válida.");
-        }
         return repositorio.guardar(p);
     }
 

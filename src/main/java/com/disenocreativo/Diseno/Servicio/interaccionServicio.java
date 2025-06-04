@@ -6,7 +6,6 @@ import com.disenocreativo.Diseno.Entidad.producto;
 import com.disenocreativo.Diseno.Repositorio.interaccionRepositorio;
 import com.disenocreativo.Diseno.Repositorio.productoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,7 +111,9 @@ public class interaccionServicio {
             if (prodOpt.isPresent()) {
                 producto prod = prodOpt.get();
                 productoFavoritoDTO dto = new productoFavoritoDTO();
-                dto.setI(i);
+                dto.setMeGusta(i.getMeGusta());
+                dto.setNoGusta(i.getNoGusta());
+                dto.setIdProducto(prod.getIdProducto());
                 dto.setNombreProducto(prod.getNombreProducto());
                 dto.setDescripcionProducto(prod.getDescripcion());
                 dto.setPrecioProducto(String.valueOf(prod.getPrecio()));

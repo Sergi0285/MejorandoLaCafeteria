@@ -30,9 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Helper Functions ---
     async function fetchData(url, options = {}) {
         const headers = new Headers({ 'Content-Type': 'application/json' });
-        if (token) {
-            headers.append('Authorization', 'Bearer ' + token);
-        }
         options.headers = headers;
 
         try {

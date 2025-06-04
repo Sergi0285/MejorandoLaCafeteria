@@ -1,8 +1,6 @@
 package com.disenocreativo.Diseno.Entidad;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
@@ -20,7 +18,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class cafeteria {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCafeteria;
 
     private String nombreCafeteria; 
